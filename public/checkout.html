@@ -75,7 +75,7 @@
                             document.getElementById('totalSubtotal').innerText = data.data.totals.subtotal.toFixed(2)
                             document.getElementById('taxTotal').innerText = data.data.totals.tax.toFixed(2)
                             document.getElementById('totalToday').innerText = data.data.totals.total.toFixed(2)
-                            
+
                             if (data.data.recurring_totals) {
                                 document.getElementById('recurringTotal').innerText = data.data.recurring_totals.total.toFixed(2)
                             } else {
@@ -121,15 +121,15 @@
                 <div id="topRightProductInfo">
                     <div id="productLabels">
                         <h5 class="brandedText">All-access</h5>
-                        <h6>Team license</h6>
+                        <h6>Subscription</h6>
                     </div>
                     <div id="grandTotal">
                         <h3 id="grandTotalPrice"><span id="grandTotalCurrency" class="currencySymbol">£</span><span
                                 id="grandTotalAmount">10.00</span></h3>
                         <h4 id="dueTodayLabel">due today</h4>
                     </div>
-                    <p class="greyText greyTextMargin">Includes full access for your team, plus all future updates.
-                        Includes full access for your team, plus all future updates.</p>
+                    <p class="greyText greyTextMargin">Includes full access to the product, plus all future updates.
+                        Add more seats, upgrade, pause or cancel your subscription at any time.</p>
                     <p id="currencyGreyText">All prices in <span id="currencyLabel">GBP</span></p>
                 </div>
 
