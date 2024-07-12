@@ -93,7 +93,7 @@ app.post('/settings', async (req, res) => {
             product_id: productId,
             unit_price: {
                 amount: basePrice,
-                currency_code: "USD"
+                currency_code: "GBP"
             },
             name: basePriceName,
             billing_cycle: billingCycle,
@@ -111,9 +111,9 @@ app.post('/settings', async (req, res) => {
         });
 
         const priceId = priceResponse.data.data.id;
-
+        console.log(productNameTwo)
         // 2nd product check and creation
-        if (productNameTwo !== '') {
+        if (productNameTwo !== undefined && productNameTwo !== null && productNameTwo !== '') {
             const createProductRequestTwo = {
                 name: productNameTwo,
                 tax_category: "standard"
@@ -145,7 +145,7 @@ app.post('/settings', async (req, res) => {
                 product_id: productIdTwo,
                 unit_price: {
                     amount: basePriceTwo,
-                    currency_code: "USD"
+                    currency_code: "GBP"
                 },
                 name: basePriceNameTwo,
                 billing_cycle: billingCycleTwo,
