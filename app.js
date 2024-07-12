@@ -6,6 +6,12 @@ import Settings from './models/Settings.js'
 import https from 'https'
 import fs from 'fs'
 import axios from 'axios'
+import dotenv from 'dotenv'
+
+// Set up environment variables
+dotenv.config()
+const apiToken = process.env.API_TOKEN;
+const clientSideToken = process.env.CLIENT_SIDE_TOKEN;
 
 const app = express()
 app.use(express.json())
@@ -14,6 +20,12 @@ app.use(express.static('./public'))
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
+
+app.get('/env', (req, res) => {
+    res.json({
+        clientSideToken: clientSideToken,
+    });
+});
 
 app.get('/pricing', (req, res) => {
     res.sendFile(path.join(__dirname, '/public/pricing.html'))
@@ -48,7 +60,7 @@ app.post('/settings', async (req, res) => {
         // Create the product
         const productResponse = await axios.post('https://sandbox-api.paddle.com/products', createProductRequest, {
             headers: {
-                'Authorization': 'Bearer 638d13ef531c884274a084cb3eb102e021cef14a91e7d4802a',
+                'Authorization': `Bearer ${apiToken}`,
                 'Content-Type': 'application/json'
             }
         });
@@ -73,7 +85,7 @@ app.post('/settings', async (req, res) => {
 
         const priceResponse = await axios.post('https://sandbox-api.paddle.com/prices', createPricesRequest, {
             headers: {
-                'Authorization': 'Bearer 638d13ef531c884274a084cb3eb102e021cef14a91e7d4802a',
+                'Authorization': `Bearer ${apiToken}`,
                 'Content-Type': 'application/json'
             }
         });
