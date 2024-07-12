@@ -43,13 +43,23 @@ app.post('/settings', async (req, res) => {
         priceDescription,
         basePrice,
         basePriceName,
+        priceQuantitySelect,
         interval,
         frequency,
+        productNameTwo,
+        priceDescriptionTwo,
+        basePriceTwo,
+        basePriceNameTwo,
+        priceQuantitySelectTwo,
+        intervalTwo,
+        frequencyTwo,
         logo,
         primaryColour,
-        secondaryColour,
         preCheckoutUrl
     } = req.body;
+
+    let productIdTwo
+    let priceIdTwo
 
     const createProductRequest = {
         name: productName,
@@ -66,20 +76,30 @@ app.post('/settings', async (req, res) => {
         });
 
         const productId = productResponse.data.data.id;
-        console.log(productId);
 
-        // Create the price
+        let billingCycle
+
+        if (interval === 'one-time') {
+            billingCycle = null
+        } else {
+            billingCycle = {
+                frequency: Number(frequency),
+                interval: interval
+            }
+        }
+
         const createPricesRequest = {
             description: priceDescription,
             product_id: productId,
             unit_price: {
                 amount: basePrice,
-                currency_code: "USD"
+                currency_code: "GBP"
             },
             name: basePriceName,
-            billing_cycle: {
-                frequency: Number(frequency),
-                interval: interval
+            billing_cycle: billingCycle,
+            quantity: {
+                minimum: 1,
+                maximum: 999999
             }
         };
 
@@ -91,7 +111,60 @@ app.post('/settings', async (req, res) => {
         });
 
         const priceId = priceResponse.data.data.id;
-        console.log(priceId);
+        console.log(productNameTwo)
+        // 2nd product check and creation
+        if (productNameTwo !== undefined && productNameTwo !== null && productNameTwo !== '') {
+            const createProductRequestTwo = {
+                name: productNameTwo,
+                tax_category: "standard"
+            };
+            // Create the 2nd product
+            const productResponseTwo = await axios.post('https://sandbox-api.paddle.com/products', createProductRequestTwo, {
+                headers: {
+                    'Authorization': `Bearer ${apiToken}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            productIdTwo = productResponseTwo.data.data.id;
+            console.log(productIdTwo);
+
+            let billingCycleTwo
+
+            if (intervalTwo === 'one-time') {
+                billingCycleTwo = null
+            } else {
+                billingCycleTwo = {
+                    frequency: Number(frequencyTwo),
+                    interval: intervalTwo
+                }
+            }
+
+            const createPricesRequestTwo = {
+                description: priceDescriptionTwo,
+                product_id: productIdTwo,
+                unit_price: {
+                    amount: basePriceTwo,
+                    currency_code: "GBP"
+                },
+                name: basePriceNameTwo,
+                billing_cycle: billingCycleTwo,
+                quantity: {
+                    minimum: 1,
+                    maximum: 999999
+                }
+            };
+
+            const priceResponseTwo = await axios.post('https://sandbox-api.paddle.com/prices', createPricesRequestTwo, {
+                headers: {
+                    'Authorization': `Bearer ${apiToken}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            priceIdTwo = priceResponseTwo.data.data.id;
+            console.log(priceIdTwo);
+        }
 
         const newlyCreatedSettings = await Settings.create({
             productId: productId,
@@ -99,11 +172,19 @@ app.post('/settings', async (req, res) => {
             priceDescription: priceDescription,
             basePrice: basePrice,
             basePriceName: basePriceName,
+            priceQuantity: priceQuantitySelect,
             interval: interval,
             frequency: frequency,
+            productIdTwo: productIdTwo,
+            priceIdTwo: priceIdTwo,
+            priceDescriptionTwo: priceDescriptionTwo,
+            basePriceTwo: basePriceTwo,
+            basePriceNameTwo: basePriceNameTwo,
+            priceQuantityTwo: priceQuantitySelectTwo,
+            intervalTwo: intervalTwo,
+            frequencyTwo: frequencyTwo,
             logo: logo,
             primaryColour: primaryColour,
-            secondaryColour: secondaryColour,
             preCheckoutUrl: preCheckoutUrl
         });
 
@@ -135,18 +216,28 @@ app.post('/settings', async (req, res) => {
 })
 
 app.get('/get-settings', async (req, res) => {
-    console.log("get-settings endpoint hit")
     const returnedResult = await Settings.find().sort({ _id: -1 }).limit(1)
     console.log(returnedResult[0])
     res.json(returnedResult[0])
 })
 
 app.post('/get-checkout-settings', async (req, res) => {
-    console.log("get-checkout-settings hit")
     const id = req.body.id
     const returnedResult = await Settings.findById(id).exec();
     console.log(returnedResult)
     res.json(returnedResult)
+})
+
+app.post('/get-prices', async (req, res) => {
+    const id = req.body.id
+    const returnedResult = await Settings.findById(id).exec();
+    const items = {
+        priceOneId: returnedResult.priceId,
+        priceOneQuantity: returnedResult.priceQuantity,
+        priceTwoId: returnedResult.priceIdTwo,
+        priceTwoQuantity: returnedResult.priceQuantityTwo
+    }
+    res.json(items)
 })
 
 app.listen('8000', (req, res) => {

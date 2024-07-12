@@ -9,6 +9,10 @@ body {
     color: rgb(51, 65, 85);
 }
 
+.hidden {
+    display: none !important;
+}
+
 .backgroundBeams {
     width: 100%;
     height: 100vh;
@@ -48,6 +52,7 @@ body {
     box-shadow: 0px 25px 50px -12px rgb(0 0 0 / .25);
     min-height: 100vh;
     max-width: 410px;
+    z-index: 2;
 }
 
 #logo {
@@ -89,12 +94,13 @@ i {
     flex-direction: column;
     flex: 2;
     padding: 0px 64px;
+    z-index: 1;
 }
 
 #rightAligningContainer {
     padding: 96px 0px 40px 0px;
     max-width: 512px;
-    z-index: 1;
+    z-index: 2;
 }
 
 #productLabels {
@@ -198,6 +204,10 @@ tr {
     align-items: baseline;
 }
 
+#secondProductLine {
+    padding: 0px 0px 12px 0px !important;
+}
+
 .boldText {
     color: rgb(35, 46, 75);
     font-weight: 600;
@@ -211,4 +221,40 @@ tr {
 
 #totalPrice {
     border-bottom: solid rgba(15, 23, 42, 0.05) 1px;
+}
+
+#priceQuantity,
+#priceQuantityTwo {
+    padding: 0px 8px;
+}
+
+.quantityAndPrice {
+    display: flex;
+    gap: 10px;
+    line-height: 1.5rem !important;
+    align-items: center;
+}
+
+.quantityAdjuster {
+    display: flex;
+    border-radius: 6px;
+    border: 0.5px solid #cacaca;
+    --primary-color: #FC4C0240;
+    box-shadow: 0px 0px 12px 2px var(--primary-color);
+    background-color: #fff;
+}
+
+.quantityAdjuster>a {
+    padding: 0px 7px;
+    font-size: 16px;
+    text-decoration: none;
+    line-height: 24px;
+}
+
+.decreaseQuantityAdjuster {
+    border-right: 0.5px solid #dbdbdb;
+}
+
+.increaseQuantityAdjuster {
+    border-left: 0.5px solid #dbdbdb;
 }
