@@ -6,11 +6,11 @@ const settingsSchema = new mongoose.Schema({
     priceDescription: { type: String },
     basePrice: { type: String },
     basePriceName: { type: String },
+    priceQuantity: { type: String },
     interval: { type: String },
     frequency: { type: String },
     logo: { type: String },
     primaryColour: { type: String },
-    secondaryColour: { type: String },
     preCheckoutUrl: { type: String }
 })
 

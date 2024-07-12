@@ -45,7 +45,12 @@
                             document.getElementById('totalSubtotal').innerText = data.data.totals.subtotal.toFixed(2)
                             document.getElementById('taxTotal').innerText = data.data.totals.tax.toFixed(2)
                             document.getElementById('totalToday').innerText = data.data.totals.total.toFixed(2)
-                            document.getElementById('recurringTotal').innerText = data.data.recurring_totals.total.toFixed(2)
+                            if (data.data.recurring_totals) {
+                                document.getElementById('recurringTotal').innerText = data.data.recurring_totals.total.toFixed(2)
+                            } else {
+                                document.getElementById('recurringPrice').classList.add('hidden');
+                            }
+                            
                             document.getElementById('recurringInterval').innerText = data.data.items[0].billing_cycle.interval
                             document.getElementById('currencyLabel').innerText = data.data.currency_code
                         }
@@ -100,7 +105,16 @@
                 <div id="pricingTableSection">
                     <table id="pricingTable">
                         <tr id="productLine">
-                            <td class="greyText"><span id="priceQuantity">1</span>x <span id="priceName">Unit</span>
+                            <td class="greyText">
+                                <div class="quantityAndPrice">
+                                    <div class="quantityAdjuster">
+                                        <a class="decreaseQuantityAdjuster" href="#" onclick="decreaseCheckoutQuantity()">-</a>
+                                        <span id="priceQuantity">1</span>
+                                        <a class="increaseQuantityAdjuster" href="#" onclick="increaseCheckoutQuantity()">+</a>
+                                        
+                                    </div>
+                                    <span id="priceName">Unit</span>
+                                </div>
                             </td>
                             <td class="greyText"><span class="currencySymbol">£</span><span
                                     id="productSubtotal">8.00</span></td>

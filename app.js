@@ -38,18 +38,22 @@ app.get('/checkout', (req, res) => {
 app.use(express.urlencoded({ extended: true }))
 
 app.post('/settings', async (req, res) => {
+
+    console.log(req.body)
     const {
         productName,
         priceDescription,
         basePrice,
         basePriceName,
+        priceQuantitySelect,
         interval,
         frequency,
         logo,
         primaryColour,
-        secondaryColour,
         preCheckoutUrl
     } = req.body;
+
+    console.log(priceQuantitySelect)
 
     const createProductRequest = {
         name: productName,
@@ -68,7 +72,17 @@ app.post('/settings', async (req, res) => {
         const productId = productResponse.data.data.id;
         console.log(productId);
 
-        // Create the price
+        let billingCycle
+
+        if (interval === 'one-time') {
+            billingCycle = null
+        } else {
+            billingCycle = {
+                frequency: Number(frequency),
+                interval: interval
+            }
+        }
+
         const createPricesRequest = {
             description: priceDescription,
             product_id: productId,
@@ -77,11 +91,14 @@ app.post('/settings', async (req, res) => {
                 currency_code: "USD"
             },
             name: basePriceName,
-            billing_cycle: {
-                frequency: Number(frequency),
-                interval: interval
+            billing_cycle: billingCycle,
+            quantity: {
+                minimum: 1,
+                maximum: 999999
             }
         };
+
+        console.log(createPricesRequest)
 
         const priceResponse = await axios.post('https://sandbox-api.paddle.com/prices', createPricesRequest, {
             headers: {
@@ -99,11 +116,11 @@ app.post('/settings', async (req, res) => {
             priceDescription: priceDescription,
             basePrice: basePrice,
             basePriceName: basePriceName,
+            priceQuantity: priceQuantitySelect,
             interval: interval,
             frequency: frequency,
             logo: logo,
             primaryColour: primaryColour,
-            secondaryColour: secondaryColour,
             preCheckoutUrl: preCheckoutUrl
         });
 
@@ -135,18 +152,26 @@ app.post('/settings', async (req, res) => {
 })
 
 app.get('/get-settings', async (req, res) => {
-    console.log("get-settings endpoint hit")
     const returnedResult = await Settings.find().sort({ _id: -1 }).limit(1)
     console.log(returnedResult[0])
     res.json(returnedResult[0])
 })
 
 app.post('/get-checkout-settings', async (req, res) => {
-    console.log("get-checkout-settings hit")
     const id = req.body.id
     const returnedResult = await Settings.findById(id).exec();
     console.log(returnedResult)
     res.json(returnedResult)
+})
+
+app.post('/get-prices', async (req, res) => {
+    const id = req.body.id
+    const returnedResult = await Settings.findById(id).exec();
+    const items = {
+        priceOneId: returnedResult.priceId,
+        priceOneQuantity: returnedResult.priceQuantity
+    }
+    res.json(items)
 })
 
 app.listen('8000', (req, res) => {

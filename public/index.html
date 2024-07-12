@@ -56,7 +56,8 @@
             box-sizing: border-box;
         }
 
-        input[type="submit"] {
+        input[type="submit"],
+        #secondPriceButton {
             display: block;
             width: 100%;
             padding: 10px;
@@ -67,20 +68,25 @@
             font-size: 16px;
             cursor: pointer;
             margin-top: 20px;
+            text-decoration: none;
+            text-align: center;
         }
 
         input[type="submit"]:hover {
             background-color: #218838;
         }
-        
-        /* .formRow {
-            display: flex;
-            gap: 12px;
-        } */
+
+        #secondPriceButton {
+            width: 50%;
+        }
+
+        .hidden {
+            display: none !important;
+        }
     </style>
 </head>
 
-<body>
+<body onload="updateFrequencyVisibility()">
     <form id="myForm" action="/settings" method="POST" onsubmit="startCountdown(event)">
         <h1>Inline Checkout Demo Builder</h1>
         <h3>1. Create a product and a price</h3>
@@ -92,19 +98,26 @@
             <input type="text" name="priceDescription" id="priceDescription" required placeholder="Pro Monthly Plan">
         </div>
 
-        <label for="basePrice" class="required">Base USD Price (Lowest denomiation, e.g. 1000 = $10.00):</label>
+        <label for="basePrice" class="required">Base USD Price (e.g. for $10.00, input 1000):</label>
         <input type="text" name="basePrice" id="basePrice" required placeholder="1000">
         <label for="basePriceName" class="required">Price Name (Will appear at checkout):</label>
         <input type="text" name="basePriceName" id="basePriceName" placeholder="Pro Monthly">
+        <label for="priceQuantitySelect" class="required">Price Quantity:</label>
+        <input type="text" name="priceQuantitySelect" id="priceQuantitySelect" placeholder="5">
         <label for="interval" class="required">Recurring Interval:</label>
-        <select name="interval" id="interval" required>
+        <select name="interval" id="interval" required onchange="updateFrequencyVisibility()">
             <option value="day">Day</option>
             <option value="week">Week</option>
-            <option value="month" selected>Month</option>
+            <option value="month">Month</option>
             <option value="year">Year</option>
+            <option value="one-time" selected>One-time</option>
         </select>
-        <label for="frequency" class="required">Frequency:</label>
+        <label id="frequencyLabel" for="frequency" class="required">Frequency:</label>
         <input type="text" name="frequency" id="frequency" required placeholder="1">
+
+        <a id="secondPriceButton" href="#">Want to add a second product and price?</a>
+
+        <div id="secondProductAndPriceDiv"></div>
 
         <h3>2. Enter seller's logo image address</h3>
         <label for="logo" class="required">Logo URL (Will appear top-left corner):</label>
@@ -114,8 +127,6 @@
         <h3>3. Enter primary brand colour</h3>
         <label for="primaryColour" class="required">Primary Colour (Hexcode only - include #, 3-8 characters):</label>
         <input type="text" name="primaryColour" id="primaryColour" required placeholder="#FD4C04">
-        <!-- <label for="secondaryColour">Secondary Colour:</label>
-        <input type="text" name="secondaryColour" id="secondaryColour"> -->
 
         <h3>4. Enter seller's pricing page URL</h3>
         <label for="preCheckoutUrl" class='required'>Pricing Page URL (Will screenshot seller's pricing page):</label>
@@ -128,6 +139,24 @@
     <script>
         const startCountdown = () => {
             document.getElementById('submit').value = "Creating pricing page... wait 10 seconds"
+        }
+
+        const updateFrequencyVisibility = () => {
+            const intervalSelect = document.getElementById('interval');
+            const frequencyLabel = document.getElementById('frequencyLabel');
+            const frequencyInput = document.getElementById('frequency');
+
+            if (intervalSelect.value === 'one-time') {
+                console.log("one-time selected")
+                frequencyLabel.classList.add('hidden');
+                frequencyInput.classList.add('hidden');
+                frequencyInput.removeAttribute('required');
+            } else {
+                console.log(intervalSelect.value)
+                frequencyLabel.classList.remove('hidden');
+                frequencyInput.classList.remove('hidden');
+                frequencyInput.setAttribute('required', 'required');
+            }
         }
     </script>
 </body>
