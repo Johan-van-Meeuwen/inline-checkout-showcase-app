@@ -204,6 +204,10 @@ tr {
     align-items: baseline;
 }
 
+#secondProductLine {
+    padding: 0px 0px 12px 0px !important;
+}
+
 .boldText {
     color: rgb(35, 46, 75);
     font-weight: 600;
@@ -219,7 +223,8 @@ tr {
     border-bottom: solid rgba(15, 23, 42, 0.05) 1px;
 }
 
-#priceQuantity {
+#priceQuantity,
+#priceQuantityTwo {
     padding: 0px 8px;
 }
 
@@ -239,7 +244,7 @@ tr {
     background-color: #fff;
 }
 
-.quantityAdjuster > a {
+.quantityAdjuster>a {
     padding: 0px 7px;
     font-size: 16px;
     text-decoration: none;

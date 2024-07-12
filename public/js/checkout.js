@@ -11,12 +11,25 @@ fetch('/get-checkout-settings', {
     .then(response => {
         console.log(response)
         document.getElementById('logo').src = response.logo
-        itemList = [
-            {
-                priceId: response.priceId,
-                quantity: Number(response.priceQuantity)
-            }
-        ]
+        if (response.priceIdTwo) {
+            itemList =  [
+                {
+                    priceId: response.priceId,
+                    quantity: Number(response.priceQuantity)
+                },
+                {
+                    priceId: response.priceIdTwo,
+                    quantity: Number(response.priceQuantityTwo)
+                }
+            ]
+        } else {
+            itemList =  [
+                {
+                    priceId: response.priceId,
+                    quantity: Number(response.priceQuantity)
+                }
+            ]
+        }
         openCheckout(itemList)
 
         const styleSheet = document.styleSheets[0];
@@ -77,6 +90,10 @@ const decreaseCheckoutQuantity = () => {
                 {
                     priceId: response.priceOneId,
                     quantity: Number(priceQuantity.innerText)
+                },
+                {
+                    priceId: response.priceTwoId,
+                    quantity: Number(priceQuantityTwo.innerText)
                 }
             ])
         })
@@ -103,6 +120,10 @@ const increaseCheckoutQuantity = () => {
                 {
                     priceId: response.priceOneId,
                     quantity: Number(priceQuantity.innerText)
+                },
+                {
+                    priceId: response.priceTwoId,
+                    quantity: Number(priceQuantityTwo.innerText)
                 }
             ])
         })
@@ -111,6 +132,68 @@ const increaseCheckoutQuantity = () => {
         })
 };
 
+const decreaseCheckoutQuantityTwo = () => {
+    let priceQuantityTwo = document.getElementById('priceQuantityTwo');
+    let currentValue = parseInt(priceQuantityTwo.innerText, 10);
+    if (currentValue > 1) {
+        priceQuantityTwo.innerText = currentValue - 1;
+    }
+
+    fetch('/get-prices', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ id: sessionStorage.getItem('mySettingsId') })
+    })
+        .then(response => response.json())
+        .then(response => {
+            console.log(response)
+            Paddle.Checkout.updateItems([
+                {
+                    priceId: response.priceOneId,
+                    quantity: Number(priceQuantity.innerText)
+                },
+                {
+                    priceId: response.priceTwoId,
+                    quantity: Number(priceQuantityTwo.innerText)
+                }
+            ])
+        })
+        .catch(error => {
+            console.log(error)
+        })
+};
+
+const increaseCheckoutQuantityTwo = () => {
+    let priceQuantityTwo = document.getElementById('priceQuantityTwo');
+    let currentValue = parseInt(priceQuantityTwo.innerText, 10);
+    priceQuantityTwo.innerText = currentValue + 1;
+
+    fetch('/get-prices', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ id: sessionStorage.getItem('mySettingsId') })
+    })
+        .then(response => response.json())
+        .then(response => {
+            Paddle.Checkout.updateItems([
+                {
+                    priceId: response.priceOneId,
+                    quantity: Number(priceQuantity.innerText)
+                },
+                {
+                    priceId: response.priceTwoId,
+                    quantity: Number(priceQuantityTwo.innerText)
+                }
+            ])
+        })
+        .catch(error => {
+            console.log(error)
+        })
+};
 
 
 

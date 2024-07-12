@@ -38,8 +38,6 @@ app.get('/checkout', (req, res) => {
 app.use(express.urlencoded({ extended: true }))
 
 app.post('/settings', async (req, res) => {
-
-    console.log(req.body)
     const {
         productName,
         priceDescription,
@@ -48,12 +46,20 @@ app.post('/settings', async (req, res) => {
         priceQuantitySelect,
         interval,
         frequency,
+        productNameTwo,
+        priceDescriptionTwo,
+        basePriceTwo,
+        basePriceNameTwo,
+        priceQuantitySelectTwo,
+        intervalTwo,
+        frequencyTwo,
         logo,
         primaryColour,
         preCheckoutUrl
     } = req.body;
 
-    console.log(priceQuantitySelect)
+    let productIdTwo
+    let priceIdTwo
 
     const createProductRequest = {
         name: productName,
@@ -70,7 +76,6 @@ app.post('/settings', async (req, res) => {
         });
 
         const productId = productResponse.data.data.id;
-        console.log(productId);
 
         let billingCycle
 
@@ -98,8 +103,6 @@ app.post('/settings', async (req, res) => {
             }
         };
 
-        console.log(createPricesRequest)
-
         const priceResponse = await axios.post('https://sandbox-api.paddle.com/prices', createPricesRequest, {
             headers: {
                 'Authorization': `Bearer ${apiToken}`,
@@ -108,7 +111,60 @@ app.post('/settings', async (req, res) => {
         });
 
         const priceId = priceResponse.data.data.id;
-        console.log(priceId);
+
+        // 2nd product check and creation
+        if (productNameTwo !== '') {
+            const createProductRequestTwo = {
+                name: productNameTwo,
+                tax_category: "standard"
+            };
+            // Create the 2nd product
+            const productResponseTwo = await axios.post('https://sandbox-api.paddle.com/products', createProductRequestTwo, {
+                headers: {
+                    'Authorization': `Bearer ${apiToken}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            productIdTwo = productResponseTwo.data.data.id;
+            console.log(productIdTwo);
+
+            let billingCycleTwo
+
+            if (intervalTwo === 'one-time') {
+                billingCycleTwo = null
+            } else {
+                billingCycleTwo = {
+                    frequency: Number(frequencyTwo),
+                    interval: intervalTwo
+                }
+            }
+
+            const createPricesRequestTwo = {
+                description: priceDescriptionTwo,
+                product_id: productIdTwo,
+                unit_price: {
+                    amount: basePriceTwo,
+                    currency_code: "USD"
+                },
+                name: basePriceNameTwo,
+                billing_cycle: billingCycleTwo,
+                quantity: {
+                    minimum: 1,
+                    maximum: 999999
+                }
+            };
+
+            const priceResponseTwo = await axios.post('https://sandbox-api.paddle.com/prices', createPricesRequestTwo, {
+                headers: {
+                    'Authorization': `Bearer ${apiToken}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            priceIdTwo = priceResponseTwo.data.data.id;
+            console.log(priceIdTwo);
+        }
 
         const newlyCreatedSettings = await Settings.create({
             productId: productId,
@@ -119,6 +175,14 @@ app.post('/settings', async (req, res) => {
             priceQuantity: priceQuantitySelect,
             interval: interval,
             frequency: frequency,
+            productIdTwo: productIdTwo,
+            priceIdTwo: priceIdTwo,
+            priceDescriptionTwo: priceDescriptionTwo,
+            basePriceTwo: basePriceTwo,
+            basePriceNameTwo: basePriceNameTwo,
+            priceQuantityTwo: priceQuantitySelectTwo,
+            intervalTwo: intervalTwo,
+            frequencyTwo: frequencyTwo,
             logo: logo,
             primaryColour: primaryColour,
             preCheckoutUrl: preCheckoutUrl
@@ -169,7 +233,9 @@ app.post('/get-prices', async (req, res) => {
     const returnedResult = await Settings.findById(id).exec();
     const items = {
         priceOneId: returnedResult.priceId,
-        priceOneQuantity: returnedResult.priceQuantity
+        priceOneQuantity: returnedResult.priceQuantity,
+        priceTwoId: returnedResult.priceIdTwo,
+        priceTwoQuantity: returnedResult.priceQuantityTwo
     }
     res.json(items)
 })

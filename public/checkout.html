@@ -42,15 +42,46 @@
                             document.getElementById('priceQuantity').innerText = data.data.items[0].quantity
                             document.getElementById('priceName').innerText = data.data.items[0].price_name
                             document.getElementById('productSubtotal').innerText = data.data.items[0].totals.subtotal.toFixed(2)
+
+                            if (data.data.items.length === 2 && data.name === 'checkout.loaded') {
+                                const pricingTable = document.getElementById('pricingTable');
+                                const secondProductLineRow = document.createElement('tr')
+                                secondProductLineRow.id = 'secondProductLine'
+                                secondProductLineRow.innerHTML = `
+                                        <td class="greyText">
+                                            <div class="quantityAndPrice">
+                                                <div class="quantityAdjuster">
+                                                    <a class="decreaseQuantityAdjuster" href="#" onclick="decreaseCheckoutQuantityTwo()">-</a>
+                                                    <span id="priceQuantityTwo">${data.data.items[1].quantity}</span>
+                                                    <a class="increaseQuantityAdjuster" href="#" onclick="increaseCheckoutQuantityTwo()">+</a>
+                                                    
+                                                </div>
+                                                <span id="priceName">${data.data.items[1].price_name}</span>
+                                            </div>
+                                        </td>
+                                        <td class="greyText"><span class="currencySymbol">£</span><span id="productSubtotalTwo">${data.data.items[1].totals.subtotal.toFixed(2)}</span></td>
+                                `
+
+                                const productLineRow = document.getElementById('productLine');
+                                if (productLineRow) {
+                                    productLineRow.insertAdjacentElement('afterend', secondProductLineRow);
+                                } else {
+                                    console.error('Product line element not found.');
+                                }
+                            } else if (data.data.items.length === 2 && data.name === 'checkout.items.updated') {
+                                document.getElementById('productSubtotalTwo').innerText = data.data.items[1].totals.subtotal.toFixed(2)
+                            }                            
+
                             document.getElementById('totalSubtotal').innerText = data.data.totals.subtotal.toFixed(2)
                             document.getElementById('taxTotal').innerText = data.data.totals.tax.toFixed(2)
                             document.getElementById('totalToday').innerText = data.data.totals.total.toFixed(2)
+                            
                             if (data.data.recurring_totals) {
                                 document.getElementById('recurringTotal').innerText = data.data.recurring_totals.total.toFixed(2)
                             } else {
                                 document.getElementById('recurringPrice').classList.add('hidden');
                             }
-                            
+
                             document.getElementById('recurringInterval').innerText = data.data.items[0].billing_cycle.interval
                             document.getElementById('currencyLabel').innerText = data.data.currency_code
                         }
@@ -108,10 +139,12 @@
                             <td class="greyText">
                                 <div class="quantityAndPrice">
                                     <div class="quantityAdjuster">
-                                        <a class="decreaseQuantityAdjuster" href="#" onclick="decreaseCheckoutQuantity()">-</a>
+                                        <a class="decreaseQuantityAdjuster" href="#"
+                                            onclick="decreaseCheckoutQuantity()">-</a>
                                         <span id="priceQuantity">1</span>
-                                        <a class="increaseQuantityAdjuster" href="#" onclick="increaseCheckoutQuantity()">+</a>
-                                        
+                                        <a class="increaseQuantityAdjuster" href="#"
+                                            onclick="increaseCheckoutQuantity()">+</a>
+
                                     </div>
                                     <span id="priceName">Unit</span>
                                 </div>

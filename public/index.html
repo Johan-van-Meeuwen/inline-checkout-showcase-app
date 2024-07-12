@@ -91,13 +91,10 @@
         <h1>Inline Checkout Demo Builder</h1>
         <h3>1. Create a product and a price</h3>
 
-        <div class="formRow">
-            <label for="productName" class="required">Product Name</label>
-            <input type="text" name="productName" id="productName" required placeholder="Strava">
-            <label for="priceDescription" class="required">Price Description</label>
-            <input type="text" name="priceDescription" id="priceDescription" required placeholder="Pro Monthly Plan">
-        </div>
-
+        <label for="productName" class="required">Product Name</label>
+        <input type="text" name="productName" id="productName" required placeholder="Strava">
+        <label for="priceDescription" class="required">Price Description</label>
+        <input type="text" name="priceDescription" id="priceDescription" required placeholder="Pro Monthly Plan">
         <label for="basePrice" class="required">Base USD Price (e.g. for $10.00, input 1000):</label>
         <input type="text" name="basePrice" id="basePrice" required placeholder="1000">
         <label for="basePriceName" class="required">Price Name (Will appear at checkout):</label>
@@ -113,11 +110,35 @@
             <option value="one-time" selected>One-time</option>
         </select>
         <label id="frequencyLabel" for="frequency" class="required">Frequency:</label>
-        <input type="text" name="frequency" id="frequency" required placeholder="1">
+        <input type="text" name="frequency" id="frequency" required>
 
-        <a id="secondPriceButton" href="#">Want to add a second product and price?</a>
+        <a id="secondPriceButton" href="#" onclick="provideSecondProductAndPriceInputs()">Add second product and
+            price</a>
 
-        <div id="secondProductAndPriceDiv"></div>
+        <div id="secondProductAndPriceDiv" class="hidden">
+            <label for="productNameTwo">2nd Product Name</label>
+            <input type="text" name="productNameTwo" id="productNameTwo" placeholder="Drift" disabled>
+            <label for="priceDescriptionTwo">2nd Price Description</label>
+            <input type="text" name="priceDescriptionTwo" id="priceDescriptionTwo" placeholder="Drift Pro Monthly Plan"
+                disabled>
+            <label for="basePriceTwo">2nd Base USD Price (e.g. for $10.00, input 1000):</label>
+            <input type="text" name="basePriceTwo" id="basePriceTwo" placeholder="1000" disabled>
+            <label for="basePriceNameTwo">2nd Price Name (Will appear at checkout):</label>
+            <input type="text" name="basePriceNameTwo" id="basePriceNameTwo" placeholder="Pro Monthly" disabled>
+            <label for="priceQuantitySelectTwo">2nd Price Quantity:</label>
+            <input type="text" name="priceQuantitySelectTwo" id="priceQuantitySelectTwo" placeholder="20" disabled>
+            <label for="intervalTwo">2nd Recurring Interval (IMPORTANT: This 2nd price interval must match the 1st price
+                interval or be one-time):</label>
+            <select name="intervalTwo" id="intervalTwo" onchange="updateFrequencyVisibilityTwo()" disabled>
+                <option value="day">Day</option>
+                <option value="week">Week</option>
+                <option value="month">Month</option>
+                <option value="year">Year</option>
+                <option value="one-time" selected>One-time</option>
+            </select>
+            <label id="frequencyLabelTwo" for="frequencyTwo">2nd Frequency:</label>
+            <input type="text" name="frequencyTwo" id="frequencyTwo" disabled>
+        </div>
 
         <h3>2. Enter seller's logo image address</h3>
         <label for="logo" class="required">Logo URL (Will appear top-left corner):</label>
@@ -147,17 +168,78 @@
             const frequencyInput = document.getElementById('frequency');
 
             if (intervalSelect.value === 'one-time') {
-                console.log("one-time selected")
                 frequencyLabel.classList.add('hidden');
                 frequencyInput.classList.add('hidden');
                 frequencyInput.removeAttribute('required');
             } else {
-                console.log(intervalSelect.value)
                 frequencyLabel.classList.remove('hidden');
                 frequencyInput.classList.remove('hidden');
                 frequencyInput.setAttribute('required', 'required');
             }
         }
+
+        const provideSecondProductAndPriceInputs = () => {
+            const divElement = document.getElementById('secondProductAndPriceDiv');
+            const buttonElement = document.getElementById('secondPriceButton');
+
+            if (divElement.classList.contains('hidden')) {
+                // Show the div and enable inputs
+                divElement.classList.remove('hidden');
+
+                var inputs = divElement.querySelectorAll('input, select');
+                inputs.forEach(function (input) {
+                    input.disabled = false; // Enable the input/select
+                    input.setAttribute('required', 'required'); // Set the required attribute
+
+                    // Find the corresponding label
+                    var label = document.querySelector('label[for="' + input.id + '"]');
+                    if (label) {
+                        label.classList.add('required'); // Add the 'required' class to the label
+                    }
+                });
+
+                buttonElement.textContent = 'Remove'; // Change button text to 'Remove'
+
+                // Enable/disable intervalTwo based on its selected value
+                updateFrequencyVisibilityTwo();
+            } else {
+                // Hide the div and disable inputs
+                divElement.classList.add('hidden');
+
+                var inputs = divElement.querySelectorAll('input, select');
+                inputs.forEach(function (input) {
+                    input.disabled = true; // Disable the input/select
+                    input.removeAttribute('required'); // Remove the required attribute
+
+                    // Find the corresponding label
+                    var label = document.querySelector('label[for="' + input.id + '"]');
+                    if (label) {
+                        label.classList.remove('required'); // Remove the 'required' class from the label
+                    }
+                });
+
+                buttonElement.textContent = 'Add second product and price'; // Change button text back to original
+            }
+        }
+
+        function updateFrequencyVisibilityTwo() {
+            var intervalTwo = document.getElementById('intervalTwo');
+            var frequencyLabelTwo = document.getElementById('frequencyLabelTwo');
+            var frequencyTwo = document.getElementById('frequencyTwo');
+
+            if (intervalTwo.value === 'one-time') {
+                frequencyLabelTwo.style.display = 'none';
+                frequencyTwo.style.display = 'none';
+                frequencyTwo.disabled = true;
+                frequencyTwo.removeAttribute('required');
+            } else {
+                frequencyLabelTwo.style.display = 'block';
+                frequencyTwo.style.display = 'block';
+                frequencyTwo.disabled = false;
+                frequencyTwo.setAttribute('required', 'required');
+            }
+        }
+
     </script>
 </body>
 
