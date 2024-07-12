@@ -9,47 +9,57 @@
     <script src="https://kit.fontawesome.com/6e759bf7c0.js" crossorigin="anonymous"></script>
     <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
     <script type="text/javascript">
-        Paddle.Environment.set("sandbox");
-        Paddle.Initialize({
-            token: "test_7049100eb7696998be8107edc0f",
-            eventCallback: function (data) {
-                if (data.type !== "checkout.ping.size") {
-                    console.log(data)
-                    let currencySymbols = document.getElementsByClassName('currencySymbol')
-                    for (const key in currencySymbols) {
-                        if (currencySymbols.hasOwnProperty(key)) {
-                            const element = currencySymbols[key];
-                            if (element) {
-                                if (data.data.currency_code === 'GBP') {
-                                    element.innerText = '£';
-                                } else if (data.data.currency_code === 'USD') {
-                                    element.innerText = '$';
-                                } else if (data.data.currency_code === 'EUR') {
-                                    element.innerText = '€';
-                                } else {
-                                    element.innerText = `${data.data.currency_code} `
+
+        fetch('/env')
+            .then(response => response.json())
+            .then(data => {
+                let clientSideToken = data.clientSideToken;
+
+                Paddle.Environment.set("sandbox");
+                Paddle.Initialize({
+                    token: clientSideToken,
+                    eventCallback: function (data) {
+                        if (data.type !== "checkout.ping.size") {
+                            console.log(data)
+                            let currencySymbols = document.getElementsByClassName('currencySymbol')
+                            for (const key in currencySymbols) {
+                                if (currencySymbols.hasOwnProperty(key)) {
+                                    const element = currencySymbols[key];
+                                    if (element) {
+                                        if (data.data.currency_code === 'GBP') {
+                                            element.innerText = '£';
+                                        } else if (data.data.currency_code === 'USD') {
+                                            element.innerText = '$';
+                                        } else if (data.data.currency_code === 'EUR') {
+                                            element.innerText = '€';
+                                        } else {
+                                            element.innerText = `${data.data.currency_code} `
+                                        }
+                                    }
                                 }
                             }
+                            document.getElementById('grandTotalAmount').innerText = data.data.totals.total.toFixed(2)
+                            document.getElementById('priceQuantity').innerText = data.data.items[0].quantity
+                            document.getElementById('priceName').innerText = data.data.items[0].price_name
+                            document.getElementById('productSubtotal').innerText = data.data.items[0].totals.subtotal.toFixed(2)
+                            document.getElementById('totalSubtotal').innerText = data.data.totals.subtotal.toFixed(2)
+                            document.getElementById('taxTotal').innerText = data.data.totals.tax.toFixed(2)
+                            document.getElementById('totalToday').innerText = data.data.totals.total.toFixed(2)
+                            document.getElementById('recurringTotal').innerText = data.data.recurring_totals.total.toFixed(2)
+                            document.getElementById('recurringInterval').innerText = data.data.items[0].billing_cycle.interval
+                            document.getElementById('currencyLabel').innerText = data.data.currency_code
+                        }
+
+                        if (data.name === 'checkout.customer.created') {
+                            document.getElementById('yourDetails').classList.remove('brandedText')
+                            document.getElementById('payment').classList.add('brandedText')
                         }
                     }
-                    document.getElementById('grandTotalAmount').innerText = data.data.totals.total.toFixed(2)
-                    document.getElementById('priceQuantity').innerText = data.data.items[0].quantity
-                    document.getElementById('priceName').innerText = data.data.items[0].price_name
-                    document.getElementById('productSubtotal').innerText = data.data.items[0].totals.subtotal.toFixed(2)
-                    document.getElementById('totalSubtotal').innerText = data.data.totals.subtotal.toFixed(2)
-                    document.getElementById('taxTotal').innerText = data.data.totals.tax.toFixed(2)
-                    document.getElementById('totalToday').innerText = data.data.totals.total.toFixed(2)
-                    document.getElementById('recurringTotal').innerText = data.data.recurring_totals.total.toFixed(2)
-                    document.getElementById('recurringInterval').innerText = data.data.items[0].billing_cycle.interval
-                    document.getElementById('currencyLabel').innerText = data.data.currency_code
-                }
-
-                if (data.name === 'checkout.customer.created') {
-                    document.getElementById('yourDetails').classList.remove('brandedText')
-                    document.getElementById('payment').classList.add('brandedText')
-                }
-            }
-        });
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching environment variables:', error);
+            });
     </script>
     <script src="./js/checkout.js"></script>
 </head>
@@ -58,8 +68,7 @@
     <div id="pageContainer">
 
         <div id="leftContainer">
-            <img src="https://miro.medium.com/v2/resize:fit:1260/1*ngNzwrRBDElDnf2CLF_Rbg.gif"
-                alt="" id="logo">
+            <img src="https://miro.medium.com/v2/resize:fit:1260/1*ngNzwrRBDElDnf2CLF_Rbg.gif" alt="" id="logo">
             <div id="breadcrumbs">
                 <p class="breadcrumbLabel">Packages</p>
                 <i class="fa-solid fa-chevron-right"></i>

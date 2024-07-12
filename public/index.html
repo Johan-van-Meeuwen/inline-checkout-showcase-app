@@ -19,7 +19,7 @@
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
+            max-width: 1200px;
             margin: 0 auto;
         }
 
@@ -72,6 +72,11 @@
         input[type="submit"]:hover {
             background-color: #218838;
         }
+        
+        /* .formRow {
+            display: flex;
+            gap: 12px;
+        } */
     </style>
 </head>
 
@@ -80,11 +85,13 @@
         <h1>Inline Checkout Demo Builder</h1>
         <h3>1. Create a product and a price</h3>
 
-        <label for="productName" class="required">Product Name (Required to create product):</label>
-        <input type="text" name="productName" id="productName" required placeholder="Strava">
+        <div class="formRow">
+            <label for="productName" class="required">Product Name</label>
+            <input type="text" name="productName" id="productName" required placeholder="Strava">
+            <label for="priceDescription" class="required">Price Description</label>
+            <input type="text" name="priceDescription" id="priceDescription" required placeholder="Pro Monthly Plan">
+        </div>
 
-        <label for="priceDescription" class="required">Price Description (Required to create price):</label>
-        <input type="text" name="priceDescription" id="priceDescription" required placeholder="Pro Monthly Plan">
         <label for="basePrice" class="required">Base USD Price (Lowest denomiation, e.g. 1000 = $10.00):</label>
         <input type="text" name="basePrice" id="basePrice" required placeholder="1000">
         <label for="basePriceName" class="required">Price Name (Will appear at checkout):</label>
