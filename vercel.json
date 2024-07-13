@@ -8,6 +8,10 @@
     ],
     "routes": [
         {
+            "src": "/settings",
+            "dest": "/app.js"
+        },
+        {
             "src": "/get-settings",
             "dest": "/app.js"
         },
