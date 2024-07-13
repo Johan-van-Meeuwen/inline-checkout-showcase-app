@@ -5,7 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout</title>
-    <link rel="icon" href="https://gdm-catalog-fmapi-prod.imgix.net/ProductLogo/af64f259-14e8-4c9a-a327-51c2d99cb487.png" type="image/png">
+    <link rel="icon"
+        href="https://gdm-catalog-fmapi-prod.imgix.net/ProductLogo/af64f259-14e8-4c9a-a327-51c2d99cb487.png"
+        type="image/png">
     <link rel="stylesheet" href="/css/stylesheet.css">
     <script src="https://kit.fontawesome.com/6e759bf7c0.js" crossorigin="anonymous"></script>
     <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
@@ -71,7 +73,7 @@
                                 }
                             } else if (data.data.items.length === 2 && data.name === 'checkout.items.updated') {
                                 document.getElementById('productSubtotalTwo').innerText = data.data.items[1].totals.subtotal.toFixed(2)
-                            }                            
+                            }
 
                             document.getElementById('totalSubtotal').innerText = data.data.totals.subtotal.toFixed(2)
                             document.getElementById('taxTotal').innerText = data.data.totals.tax.toFixed(2)
@@ -85,7 +87,7 @@
                                         document.getElementById('recurringInterval').innerText = data.data.items[1].billing_cycle.interval
                                     } else {
                                         document.getElementById('recurringInterval').innerText = `${data.data.items[1].billing_cycle.frequency} ${data.data.items[1].billing_cycle.interval}s`
-                                    } 
+                                    }
                                 } else {
                                     if (data.data.items[0].billing_cycle.frequency === 1) {
                                         document.getElementById('recurringInterval').innerText = data.data.items[0].billing_cycle.interval
