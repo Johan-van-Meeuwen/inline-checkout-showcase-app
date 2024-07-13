@@ -1,3 +1,10 @@
 import mongoose from "mongoose";
+import dotenv from "dotenv";
 
-mongoose.connect("mongodb+srv://jvm232:wEvMG8lkm2x1E598@myfirstcluster.mqlktdf.mongodb.net/inline_checkout_demo_builder?retryWrites=true&w=majority&appName=myFirstCluster");
+dotenv.config();
+
+const mongoURI = process.env.MONGODB_URI || 'mongodb+srv://defaultUser:defaultPassword@defaultCluster.mongodb.net/defaultDatabase?retryWrites=true&w=majority&appName=defaultAppName';
+
+mongoose.connect(mongoURI)
+    .then(() => console.log('MongoDB connected'))
+    .catch((err) => console.error(err));
