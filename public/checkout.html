@@ -78,11 +78,25 @@
 
                             if (data.data.recurring_totals) {
                                 document.getElementById('recurringTotal').innerText = data.data.recurring_totals.total.toFixed(2)
+                                document.getElementById('purchaseType').innerText = "Subscription"
+                                if (data.data.items[0].billing_cycle === null) {
+                                    if (data.data.items[1].billing_cycle.frequency === 1) {
+                                        document.getElementById('recurringInterval').innerText = data.data.items[1].billing_cycle.interval
+                                    } else {
+                                        document.getElementById('recurringInterval').innerText = `${data.data.items[1].billing_cycle.frequency} ${data.data.items[1].billing_cycle.interval}s`
+                                    } 
+                                } else {
+                                    if (data.data.items[0].billing_cycle.frequency === 1) {
+                                        document.getElementById('recurringInterval').innerText = data.data.items[0].billing_cycle.interval
+                                    } else {
+                                        document.getElementById('recurringInterval').innerText = `${data.data.items[0].billing_cycle.frequency} ${data.data.items[0].billing_cycle.interval}s`
+                                    }
+                                }
                             } else {
-                                document.getElementById('recurringPrice').classList.add('hidden');
+                                document.getElementById('recurringPrice').classList.add('hidden')
+                                document.getElementById('purchaseType').innerText = "One-time purchase"
                             }
 
-                            document.getElementById('recurringInterval').innerText = data.data.items[0].billing_cycle.interval
                             document.getElementById('currencyLabel').innerText = data.data.currency_code
                         }
 
@@ -106,7 +120,7 @@
         <div id="leftContainer">
             <img src="https://miro.medium.com/v2/resize:fit:1260/1*ngNzwrRBDElDnf2CLF_Rbg.gif" alt="" id="logo">
             <div id="breadcrumbs">
-                <p class="breadcrumbLabel">Packages</p>
+                <a class="breadcrumbLabel" href="/pricing">Packages</a>
                 <i class="fa-solid fa-chevron-right"></i>
                 <p id="yourDetails" class="breadcrumbLabel brandedText">Your details</p>
                 <i class="fa-solid fa-chevron-right"></i>
@@ -121,7 +135,7 @@
                 <div id="topRightProductInfo">
                     <div id="productLabels">
                         <h5 class="brandedText">All-access</h5>
-                        <h6>Subscription</h6>
+                        <h6 id="purchaseType">Subscription</h6>
                     </div>
                     <div id="grandTotal">
                         <h3 id="grandTotalPrice"><span id="grandTotalCurrency" class="currencySymbol">£</span><span

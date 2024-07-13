@@ -1,15 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pricing</title>
-    <script src="./js/pricing.js"></script>
     <link rel="stylesheet" href="./css/stylesheet.css">
+    <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
 </head>
+
 <body>
-    <img id="pricingImage" src="./images/screenshot.jpeg">
-    <!-- <iframe id="pricingPage" src="" frameborder="0"></iframe> -->
-    <a id="checkoutButton" href="/checkout" style="position: sticky; bottom: 0; opacity: 0%; font-size: 10px; display: inline-block; position: -webkit-sticky; width: 100vw; height: 100vh;">Checkout</a>
+    <img id="pricingImage"
+        style="background-color: #FFF;">
+    <a id="checkoutButton" href="/checkout"
+        style="position: sticky; bottom: 0; opacity: 0%; font-size: 10px; display: inline-block; position: -webkit-sticky; width: 100vw; height: 100vh;">Checkout</a>
+        <div class="toggle-container">
+            <label class="toggle-label" for="toggle">Overlay</label>
+            <label class="toggle-switch">
+                <input type="checkbox" id="toggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+    <script src="./js/pricing.js"></script>
 </body>
+
 </html>

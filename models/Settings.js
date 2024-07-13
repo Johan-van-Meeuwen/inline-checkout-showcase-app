@@ -19,7 +19,8 @@ const settingsSchema = new mongoose.Schema({
     frequencyTwo: { type: String },
     logo: { type: String },
     primaryColour: { type: String },
-    preCheckoutUrl: { type: String }
+    preCheckoutUrl: { type: String },
+    preCheckoutUrlApiFlashUrl: { type: String }
 })
 
 const Settings = new mongoose.model('Settings', settingsSchema)
