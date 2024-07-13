@@ -1,5 +1,11 @@
 {
     "version": 2,
+    "builds": [
+        {
+            "src": "server.js",
+            "use": "@vercel/node"
+        }
+    ],
     "routes": [
         {
             "src": "/settings",
@@ -26,10 +32,5 @@
             "dest": "/app.js"
         }
     ],
-    "functions": {
-        "app.js": {
-            "maxDuration": 30
-        }
-    },
     "public": true
 }
