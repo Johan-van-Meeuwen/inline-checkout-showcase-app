@@ -213,9 +213,9 @@ app.post('/settings', async (req, res) => {
         }
     }
 
-    setTimeout(() => {
+    // setTimeout(() => {
         res.status(200).redirect('/pricing');
-    }, 8000);
+    // }, 8000);
 });
 
 app.get('/get-settings', async (req, res) => {
