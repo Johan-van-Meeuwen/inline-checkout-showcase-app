@@ -33,7 +33,7 @@
         }
     ],
     "functions": {
-        "/app.js": {
+        "app.js": {
             "maxDuration": 30
         }
     },
