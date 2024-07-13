@@ -78,6 +78,18 @@ function getApiFlashUrl(preCheckoutUrl) {
     });
 }
 
+let settingsId
+
+const setId = (newlyCreatedSettingsId) => {
+    settingsId = newlyCreatedSettingsId
+    console.log(`Setting: ${settingsId}`)
+}
+
+const getId = () => {
+    console.log(`Getting: ${settingsId}`)
+    return settingsId
+}
+
 app.post('/settings', async (req, res) => {
     const {
         productName,
@@ -204,6 +216,7 @@ app.post('/settings', async (req, res) => {
         });
 
         console.log(`Newly Created Settings: ${newlyCreatedSettings}`);
+        setId(newlyCreatedSettings._id)
 
     } catch (error) {
         if (error.response) {
@@ -213,15 +226,17 @@ app.post('/settings', async (req, res) => {
         }
     }
 
-    // setTimeout(() => {
+    setTimeout(() => {
         res.status(200).redirect('/pricing');
-    // }, 8000);
+    }, 5000);
 });
 
 app.get('/get-settings', async (req, res) => {
-    const returnedResult = await Settings.find().sort({ _id: -1 }).limit(1)
-    console.log(returnedResult[0])
-    res.json(returnedResult[0])
+    const returnedId = getId()
+    console.log(`Reutned to me to send back: ${returnedId}`)
+    const returnedResult = await Settings.findById(returnedId).exec()
+    console.log(returnedResult)
+    res.json(returnedResult)
 })
 
 app.post('/get-checkout-settings', async (req, res) => {
