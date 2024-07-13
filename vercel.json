@@ -32,5 +32,10 @@
             "dest": "/app.js"
         }
     ],
+    "functions": {
+        "/app.js": {
+            "maxDuration": 30
+        }
+    },
     "public": true
 }
