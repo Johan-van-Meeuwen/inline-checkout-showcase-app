@@ -92,13 +92,13 @@
         <h3>1. Create a product and a price</h3>
 
         <label for="productName" class="required">Product Name</label>
-        <input type="text" name="productName" id="productName" required placeholder="Strava">
+        <input type="text" name="productName" id="productName" required placeholder="Strava" autocomplete="productName">
         <label for="productImage">Product Logo</label>
-        <input type="text" name="productImage" id="productImage" placeholder="https://strava.com/logo.png">
-        <label for="priceDescription" class="required">Price Description</label>
-        <input type="text" name="priceDescription" id="priceDescription" required placeholder="Pro Monthly Plan">
+        <input type="text" name="productImage" id="productImage" placeholder="https://strava.com/logo.png" autocomplete="productImage">
+        <label for="priceDescription" class="required" autocomplete="name">Price Description</label>
+        <input type="text" name="priceDescription" id="priceDescription" required placeholder="Pro Monthly Plan" autocomplete="name">
         <label for="basePrice" class="required">Base USD Price (e.g. for $10.00, input 1000):</label>
-        <input type="text" name="basePrice" id="basePrice" required placeholder="1000">
+        <input type="text" name="basePrice" id="basePrice" required placeholder="1000" autocomplete="name">
         <label for="basePriceName" class="required">Price Name (Will appear at checkout):</label>
         <input type="text" name="basePriceName" id="basePriceName" placeholder="Pro Monthly">
         <label for="priceQuantitySelect" class="required">Price Quantity:</label>
@@ -107,9 +107,9 @@
         <select name="interval" id="interval" required onchange="updateFrequencyVisibility()">
             <option value="day">Day</option>
             <option value="week">Week</option>
-            <option value="month">Month</option>
+            <option value="month" selected>Month</option>
             <option value="year">Year</option>
-            <option value="one-time" selected>One-time</option>
+            <option value="one-time">One-time</option>
         </select>
         <label id="frequencyLabel" for="frequency" class="required">Frequency:</label>
         <input type="text" name="frequency" id="frequency" required>
@@ -121,9 +121,11 @@
             <label for="productNameTwo">2nd Product Name</label>
             <input type="text" name="productNameTwo" id="productNameTwo" placeholder="Drift" disabled>
             <label for="productImageTwo">2nd Product Logo</label>
-            <input type="text" name="productImageTwo" id="productImageTwo" placeholder="https://drift.com/logo.png" disabled>
+            <input type="text" name="productImageTwo" id="productImageTwo" placeholder="https://drift.com/logo.png"
+                disabled>
             <label for="priceDescriptionTwo">2nd Price Description</label>
-            <input type="text" name="priceDescriptionTwo" id="priceDescriptionTwo" placeholder="Drift Pro Monthly Plan" disabled>
+            <input type="text" name="priceDescriptionTwo" id="priceDescriptionTwo" placeholder="Drift Pro Monthly Plan"
+                disabled>
             <label for="basePriceTwo">2nd Base USD Price (e.g. for $10.00, input 1000):</label>
             <input type="text" name="basePriceTwo" id="basePriceTwo" placeholder="1000" disabled>
             <label for="basePriceNameTwo">2nd Price Name (Will appear at checkout):</label>
@@ -135,9 +137,9 @@
             <select name="intervalTwo" id="intervalTwo" onchange="updateFrequencyVisibilityTwo()" disabled>
                 <option value="day">Day</option>
                 <option value="week">Week</option>
-                <option value="month">Month</option>
+                <option value="month" selected>Month</option>
                 <option value="year">Year</option>
-                <option value="one-time" selected>One-time</option>
+                <option value="one-time">One-time</option>
             </select>
             <label id="frequencyLabelTwo" for="frequencyTwo">2nd Frequency:</label>
             <input type="text" name="frequencyTwo" id="frequencyTwo" disabled>
@@ -249,6 +251,7 @@
         }
 
     </script>
+
 </body>
 
 </html>

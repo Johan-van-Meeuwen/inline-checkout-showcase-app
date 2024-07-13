@@ -1,3 +1,5 @@
+let itemList
+
 fetch('/get-settings', {
     method: 'GET',
     headers: {
@@ -12,6 +14,25 @@ fetch('/get-settings', {
         // setTimeout(() => {
             document.getElementById('pricingImage').src = response.preCheckoutUrlApiFlashUrl
         // }, 4000);
+        if (response.priceIdTwo) {
+            itemList = [
+                {
+                    priceId: response.priceId,
+                    quantity: Number(response.priceQuantity)
+                },
+                {
+                    priceId: response.priceIdTwo,
+                    quantity: Number(response.priceQuantityTwo)
+                }
+            ]
+        } else {
+            itemList = [
+                {
+                    priceId: response.priceId,
+                    quantity: Number(response.priceQuantity)
+                }
+            ]
+        }
     })
     .catch(error => {
         console.log(error)
@@ -49,43 +70,6 @@ toggleSwitch.addEventListener('change', function () {
         checkoutButton.removeAttribute('onclick', 'openOverlayCheckout(itemList)')
     }
 });
-
-let itemList
-
-fetch('/get-checkout-settings', {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ id: sessionStorage.getItem('mySettingsId') })
-})
-    .then(response => response.json())
-    .then(response => {
-        console.log(response)
-        console.log('get-checkout-settings string:', response._id)
-        if (response.priceIdTwo) {
-            itemList = [
-                {
-                    priceId: response.priceId,
-                    quantity: Number(response.priceQuantity)
-                },
-                {
-                    priceId: response.priceIdTwo,
-                    quantity: Number(response.priceQuantityTwo)
-                }
-            ]
-        } else {
-            itemList = [
-                {
-                    priceId: response.priceId,
-                    quantity: Number(response.priceQuantity)
-                }
-            ]
-        }
-    })
-    .catch(error => {
-        console.log(error)
-    })
 
 const openOverlayCheckout = (items) => {
     Paddle.Checkout.open({
