@@ -1,17 +1,28 @@
 {
     "version": 2,
     "builds": [
-      {
-        "src": "/app.js",
-        "use": "@vercel/node"
-      }
+        {
+            "src": "/app.js",
+            "use": "@vercel/node"
+        }
     ],
     "routes": [
-      {
-        "src": "/(.*)",
-        "dest": "/app.js"
-      }
+        {
+            "src": "/get-settings",
+            "dest": "/app.js"
+        },
+        {
+            "src": "/get-checkout-settings",
+            "dest": "/app.js"
+        },
+        {
+            "src": "/get-prices",
+            "dest": "/app.js"
+        },
+        {
+            "src": "/(.*)",
+            "dest": "/app.js"
+        }
     ],
     "public": true
-  }
-  
+}
