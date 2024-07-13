@@ -53,7 +53,7 @@ function getApiFlashUrl(preCheckoutUrl) {
             no_cookie_banners: true,
             no_ads: true,
             no_tracking: true,
-            scale_factor: 2,
+            scale_factor: 1,
             response_type: 'json'
         }).toString();
 
