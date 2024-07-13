@@ -76,6 +76,7 @@ function getApiFlashUrl(preCheckoutUrl) {
 app.post('/settings', async (req, res) => {
     const {
         productName,
+        productImage,
         priceDescription,
         basePrice,
         basePriceName,
@@ -83,6 +84,7 @@ app.post('/settings', async (req, res) => {
         interval,
         frequency,
         productNameTwo,
+        productImageTwo,
         priceDescriptionTwo,
         basePriceTwo,
         basePriceNameTwo,
@@ -97,9 +99,13 @@ app.post('/settings', async (req, res) => {
     let productIdTwo;
     let priceIdTwo;
 
+    const placeholderImageUrl = 'https://icons.veryicon.com/png/o/miscellaneous/fu-jia-intranet/product-29.png';
+    const placeholderImageUrlTwo = 'https://cdn-icons-png.flaticon.com/256/1311/1311144.png';
+
     const createProductRequest = {
         name: productName,
-        tax_category: "standard"
+        tax_category: "standard",
+        image_url: productImage ? productImage : placeholderImageUrl
     };
 
     try {
@@ -134,7 +140,8 @@ app.post('/settings', async (req, res) => {
         if (productNameTwo) {
             const createProductRequestTwo = {
                 name: productNameTwo,
-                tax_category: "standard"
+                tax_category: "standard",
+                image_url: productImageTwo ? productImageTwo : placeholderImageUrlTwo
             };
 
             const productResponseTwo = await axios.post('https://sandbox-api.paddle.com/products', createProductRequestTwo, {
