@@ -1,11 +1,16 @@
 {
     "version": 2,
-    "builds": [
-        {
-            "src": "/app.js",
-            "use": "@vercel/node"
+    "functions": {
+        "app.js": {
+            "runtime": "vercel-node@latest",
+            "maxDuration": 30
         }
-    ],
+    },
+    "build": {
+        "env": {
+            "NODE_ENV": "production"
+        }
+    },
     "routes": [
         {
             "src": "/settings",
