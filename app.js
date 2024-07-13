@@ -46,7 +46,7 @@ function getApiFlashUrl(preCheckoutUrl) {
         const url = "https://api.apiflash.com/v1/urltoimage?" + new URLSearchParams({
             access_key: `${apiFlashKey}`,
             url: preCheckoutUrl,
-            quality: 100,
+            quality: 50,
             width: 1512,
             full_page: true,
             scroll_page: true,
