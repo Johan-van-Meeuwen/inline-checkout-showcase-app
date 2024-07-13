@@ -4,12 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inline Checkout Demo Builder</title>
+    <title>Paddle Checkout Demo Builder</title>
+    <link rel="icon"
+        href="https://gdm-catalog-fmapi-prod.imgix.net/ProductLogo/af64f259-14e8-4c9a-a327-51c2d99cb487.png"
+        type="image/png">
     <link rel="stylesheet" href="/css/stylesheet.css">
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            background-color: #0E1414;
             margin: 0;
             padding: 20px;
         }
@@ -18,9 +21,10 @@
             background-color: #fff;
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             max-width: 600px;
             margin: 0 auto;
+            box-shadow: 0px 0px 40px 4px #fddd35,
+                0px 0px 12px 0px #FFF;
         }
 
         h1 {
@@ -61,8 +65,9 @@
             display: block;
             width: 100%;
             padding: 10px;
-            background-color: #28a745;
-            color: #fff;
+            background-color: #fddd35;
+            color: #555;
+            font-weight: 700;
             border: none;
             border-radius: 5px;
             font-size: 16px;
@@ -83,20 +88,31 @@
         .hidden {
             display: none !important;
         }
+
+        #paddleLogo {
+            max-width: 80px;
+        }
     </style>
 </head>
 
 <body onload="updateFrequencyVisibility()">
     <form id="myForm" action="/settings" method="POST" onsubmit="startCountdown(event)">
+        <div style="display: flex; justify-content: center;">
+            <img id='paddleLogo'
+                src="https://gdm-catalog-fmapi-prod.imgix.net/ProductLogo/af64f259-14e8-4c9a-a327-51c2d99cb487.png"
+                alt="">
+        </div>
         <h1>Inline Checkout Demo Builder</h1>
         <h3>1. Create a product and a price</h3>
 
         <label for="productName" class="required">Product Name</label>
         <input type="text" name="productName" id="productName" required placeholder="Strava" autocomplete="productName">
         <label for="productImage">Product Logo</label>
-        <input type="text" name="productImage" id="productImage" placeholder="https://strava.com/logo.png" autocomplete="productImage">
+        <input type="text" name="productImage" id="productImage" placeholder="https://strava.com/logo.png"
+            autocomplete="productImage">
         <label for="priceDescription" class="required" autocomplete="name">Price Description</label>
-        <input type="text" name="priceDescription" id="priceDescription" required placeholder="Pro Monthly Plan" autocomplete="name">
+        <input type="text" name="priceDescription" id="priceDescription" required placeholder="Pro Monthly Plan"
+            autocomplete="name">
         <label for="basePrice" class="required">Base USD Price (e.g. for $10.00, input 1000):</label>
         <input type="text" name="basePrice" id="basePrice" required placeholder="1000" autocomplete="name">
         <label for="basePriceName" class="required">Price Name (Will appear at checkout):</label>
