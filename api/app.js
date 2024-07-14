@@ -1,8 +1,8 @@
 import express, { json } from 'express'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import "./config/database.js"
-import Settings from './models/Settings.js'
+import "../config/database.js"
+import Settings from '../models/Settings.js'
 import https from 'https'
 import axios from 'axios'
 import dotenv from 'dotenv'
