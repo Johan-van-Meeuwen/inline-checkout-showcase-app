@@ -1,7 +1,7 @@
 import express, { json } from 'express'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import "./config/database.js"
+import { connectToDatabase } from "./config/database.js";
 import Settings from './models/Settings.js'
 import https from 'https'
 import axios from 'axios'
@@ -85,9 +85,12 @@ function getApiFlashUrl(preCheckoutUrl) {
 }
 
 app.post('/settings', async (req, res) => {
-    console.log(req.body)
-    const requestReceived = Date.now()
-    console.log(`${requestReceived}: /settings request received`)
+    await connectToDatabase();
+
+    console.log(req.body);
+    const requestReceived = Date.now();
+    console.log(`${requestReceived}: /settings request received`);
+
     const {
         productName,
         productImage,
@@ -131,7 +134,7 @@ app.post('/settings', async (req, res) => {
         });
 
         const productId = productResponse.data.data.id;
-        console.log(`${Date.now()}: Product 1 created ${productId}`)
+        console.log(`${Date.now()}: Product 1 created ${productId}`);
         let billingCycle = interval === 'one-time' ? null : { frequency: Number(frequency), interval: interval };
 
         const createPricesRequest = {
@@ -151,7 +154,7 @@ app.post('/settings', async (req, res) => {
         });
 
         const priceId = priceResponse.data.data.id;
-        console.log(`${Date.now()}: Price 1 created ${priceId}`)
+        console.log(`${Date.now()}: Price 1 created ${priceId}`);
 
         if (productNameTwo) {
             const createProductRequestTwo = {
@@ -168,7 +171,7 @@ app.post('/settings', async (req, res) => {
             });
 
             productIdTwo = productResponseTwo.data.data.id;
-            console.log(`${Date.now()}: Product 2 created ${productIdTwo}`)
+            console.log(`${Date.now()}: Product 2 created ${productIdTwo}`);
             let billingCycleTwo = intervalTwo === 'one-time' ? null : { frequency: Number(frequencyTwo), interval: intervalTwo };
 
             const createPricesRequestTwo = {
@@ -188,7 +191,7 @@ app.post('/settings', async (req, res) => {
             });
 
             priceIdTwo = priceResponseTwo.data.data.id;
-            console.log(`${Date.now()}: Price 2 created ${priceIdTwo}`)
+            console.log(`${Date.now()}: Price 2 created ${priceIdTwo}`);
         }
 
         const preCheckoutUrlApiFlashUrl = await getApiFlashUrl(preCheckoutUrl);
@@ -216,17 +219,18 @@ app.post('/settings', async (req, res) => {
             preCheckoutUrlApiFlashUrl: preCheckoutUrlApiFlashUrl
         });
 
-        const settingsCreated = Date.now()
+        const settingsCreated = Date.now();
         console.log(`${settingsCreated}: Newly Created Settings created: ${newlyCreatedSettings._id}`);
         console.log(`Time taken between request received and settings created: ${(settingsCreated - requestReceived) / 1000} seconds`);
 
-        res.json({ id: newlyCreatedSettings._id })
+        res.json({ id: newlyCreatedSettings._id });
     } catch (error) {
         if (error.response) {
             console.log(error.response.data);
         } else {
             console.log(error.message);
         }
+        res.status(500).send('Internal Server Error');
     }
 });
 

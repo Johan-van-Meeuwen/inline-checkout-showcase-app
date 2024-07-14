@@ -5,6 +5,20 @@ dotenv.config();
 
 const mongoURI = process.env.MONGODB_URI || 'mongodb+srv://defaultUser:defaultPassword@defaultCluster.mongodb.net/defaultDatabase?retryWrites=true&w=majority&appName=defaultAppName';
 
-mongoose.connect(mongoURI)
-    .then(() => console.log('MongoDB connected'))
-    .catch((err) => console.error(err));
+let isConnected = false;
+
+export const connectToDatabase = async () => {
+    console.log('Connecting to database...')
+    if (isConnected) {
+        console.log('Using existing database connection');
+        return;
+    }
+
+    try {
+        await mongoose.connect(mongoURI);
+        isConnected = true;
+        console.log('MongoDB connected');
+    } catch (error) {
+        console.error('Error connecting to MongoDB:', error);
+    }
+};
