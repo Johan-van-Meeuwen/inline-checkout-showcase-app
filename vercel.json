@@ -8,27 +8,27 @@
     "routes": [
         {
             "src": "/settings",
-            "dest": "/app.js"
+            "dest": "/api/app.js"
         },
         {
             "src": "/get-settings",
-            "dest": "/app.js"
+            "dest": "/api/app.js"
         },
         {
             "src": "/get-checkout-settings",
-            "dest": "/app.js"
+            "dest": "/api/app.js"
         },
         {
             "src": "/get-prices",
-            "dest": "/app.js"
+            "dest": "/api/app.js"
         },
         {
             "src": "/env",
-            "dest": "/app.js"
+            "dest": "/api/app.js"
         },
         {
             "src": "/(.*)",
-            "dest": "/app.js"
+            "dest": "/api/app.js"
         }
     ],
     "public": true
