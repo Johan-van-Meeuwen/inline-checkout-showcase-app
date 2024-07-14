@@ -42,6 +42,8 @@ app.get('/checkout', (req, res) => {
 app.use(express.urlencoded({ extended: true }))
 
 function getApiFlashUrl(preCheckoutUrl) {
+    const startingScreenshotJobTime = Date.now()
+    console.log(`${startingScreenshotJobTime}: Starting screenshot job`)
     return new Promise((resolve, reject) => {
         const url = "https://api.apiflash.com/v1/urltoimage?" + new URLSearchParams({
             access_key: `${apiFlashKey}`,
@@ -58,6 +60,9 @@ function getApiFlashUrl(preCheckoutUrl) {
         }).toString();
 
         https.get(url, (response) => {
+            const gettingScreenshotResponseTime = Date.now()
+            console.log(`${gettingScreenshotResponseTime}: Getting screenshot job response`)
+            console.log(`Time it took to get screenshot: ${(gettingScreenshotResponseTime - startingScreenshotJobTime) / 1000} seconds`)
             let data = '';
 
             response.on('data', (chunk) => {
@@ -67,6 +72,7 @@ function getApiFlashUrl(preCheckoutUrl) {
             response.on('end', () => {
                 try {
                     const parsedData = JSON.parse(data);
+                    console.log(`${Date.now()}: Resolving screenshot job response`)
                     resolve(parsedData.url);
                 } catch (error) {
                     reject('Error parsing JSON response: ' + error);
@@ -78,19 +84,10 @@ function getApiFlashUrl(preCheckoutUrl) {
     });
 }
 
-let settingsId
-
-const setId = (newlyCreatedSettingsId) => {
-    settingsId = newlyCreatedSettingsId
-    console.log(`Setting: ${settingsId}`)
-}
-
-const getId = () => {
-    console.log(`Getting: ${settingsId}`)
-    return settingsId
-}
-
 app.post('/settings', async (req, res) => {
+    console.log(req.body)
+    const requestReceived = Date.now()
+    console.log(`${requestReceived}: /settings request received`)
     const {
         productName,
         productImage,
@@ -134,6 +131,7 @@ app.post('/settings', async (req, res) => {
         });
 
         const productId = productResponse.data.data.id;
+        console.log(`${Date.now()}: Product 1 created ${productId}`)
         let billingCycle = interval === 'one-time' ? null : { frequency: Number(frequency), interval: interval };
 
         const createPricesRequest = {
@@ -153,6 +151,7 @@ app.post('/settings', async (req, res) => {
         });
 
         const priceId = priceResponse.data.data.id;
+        console.log(`${Date.now()}: Price 1 created ${priceId}`)
 
         if (productNameTwo) {
             const createProductRequestTwo = {
@@ -169,6 +168,7 @@ app.post('/settings', async (req, res) => {
             });
 
             productIdTwo = productResponseTwo.data.data.id;
+            console.log(`${Date.now()}: Product 2 created ${productIdTwo}`)
             let billingCycleTwo = intervalTwo === 'one-time' ? null : { frequency: Number(frequencyTwo), interval: intervalTwo };
 
             const createPricesRequestTwo = {
@@ -188,6 +188,7 @@ app.post('/settings', async (req, res) => {
             });
 
             priceIdTwo = priceResponseTwo.data.data.id;
+            console.log(`${Date.now()}: Price 2 created ${priceIdTwo}`)
         }
 
         const preCheckoutUrlApiFlashUrl = await getApiFlashUrl(preCheckoutUrl);
@@ -215,9 +216,11 @@ app.post('/settings', async (req, res) => {
             preCheckoutUrlApiFlashUrl: preCheckoutUrlApiFlashUrl
         });
 
-        console.log(`Newly Created Settings: ${newlyCreatedSettings}`);
-        setId(newlyCreatedSettings._id)
+        const settingsCreated = Date.now()
+        console.log(`${settingsCreated}: Newly Created Settings created: ${newlyCreatedSettings._id}`);
+        console.log(`Time taken between request received and settings created: ${(settingsCreated - requestReceived) / 1000} seconds`);
 
+        res.json({ id: newlyCreatedSettings._id })
     } catch (error) {
         if (error.response) {
             console.log(error.response.data);
@@ -225,16 +228,11 @@ app.post('/settings', async (req, res) => {
             console.log(error.message);
         }
     }
-
-    setTimeout(() => {
-        res.status(200).redirect('/pricing');
-    }, 5000);
 });
 
-app.get('/get-settings', async (req, res) => {
-    const returnedId = getId()
-    console.log(`Reutned to me to send back: ${returnedId}`)
-    const returnedResult = await Settings.findById(returnedId).exec()
+app.post('/get-settings', async (req, res) => {
+    const mySettingsId = req.body.id
+    const returnedResult = await Settings.findById(mySettingsId).exec()
     console.log(returnedResult)
     res.json(returnedResult)
 })

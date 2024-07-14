@@ -1,19 +1,16 @@
 let itemList
 
 fetch('/get-settings', {
-    method: 'GET',
+    method: 'POST',
     headers: {
         'Content-Type': 'application/json'
     },
+    body: JSON.stringify({ id: sessionStorage.getItem('mySettingsId') })
 })
     .then(response => response.json())
     .then(response => {
         console.log(response)
-        sessionStorage.setItem('mySettingsId', response._id);
-        console.log('get-settings string:', response._id);
-        // setTimeout(() => {
-            document.getElementById('pricingImage').src = response.preCheckoutUrlApiFlashUrl
-        // }, 4000);
+        document.getElementById('pricingImage').src = response.preCheckoutUrlApiFlashUrl
         if (response.priceIdTwo) {
             itemList = [
                 {

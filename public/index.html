@@ -96,7 +96,7 @@
 </head>
 
 <body onload="updateFrequencyVisibility()">
-    <form id="myForm" action="/settings" method="POST" onsubmit="startCountdown(event)">
+    <form id="myForm">
         <div style="display: flex; justify-content: center;">
             <img id='paddleLogo'
                 src="https://gdm-catalog-fmapi-prod.imgix.net/ProductLogo/af64f259-14e8-4c9a-a327-51c2d99cb487.png"
@@ -179,9 +179,71 @@
     </form>
 
     <script>
-        const startCountdown = () => {
-            document.getElementById('submit').value = "Creating pricing page... wait 10 seconds"
-        }
+        const form = document.getElementById('myForm');
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const formData = {
+                productName: document.getElementById('productName').value,
+                productImage: document.getElementById('productImage').value,
+                priceDescription: document.getElementById('priceDescription').value,
+                basePrice: document.getElementById('basePrice').value,
+                basePriceName: document.getElementById('basePriceName').value,
+                priceQuantitySelect: document.getElementById('priceQuantitySelect').value,
+                interval: document.getElementById('interval').value,
+                frequency: document.getElementById('frequency').value,
+                productNameTwo: document.getElementById('productNameTwo').value,
+                productImageTwo: document.getElementById('productImageTwo').value,
+                priceDescriptionTwo: document.getElementById('priceDescriptionTwo').value,
+                basePriceTwo: document.getElementById('basePriceTwo').value,
+                basePriceNameTwo: document.getElementById('basePriceNameTwo').value,
+                priceQuantitySelectTwo: document.getElementById('priceQuantitySelectTwo').value,
+                intervalTwo: document.getElementById('intervalTwo').value,
+                frequencyTwo: document.getElementById('frequencyTwo').value,
+                logo: document.getElementById('logoInput').value,
+                primaryColour: document.getElementById('primaryColour').value,
+                preCheckoutUrl: document.getElementById('preCheckoutUrl').value
+            };
+
+            const submitButton = document.getElementById('submit');
+            submitButton.disabled = true; // Disable submit button while processing
+            submitButton.style.backgroundColor = 'grey'
+            submitButton.value = 'Please wait up to 60 seconds'
+
+            try {
+                const response = await fetch('/settings', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to create settings');
+                }
+
+                const data = await response.json();
+
+                // Save the settings ID to session storage
+                console.log(data.id)
+                sessionStorage.setItem('mySettingsId', data.id);
+                console.log('mySettingsId set on index.html:', data.id);
+
+                // Wait for 5 seconds before redirecting
+                await new Promise(resolve => setTimeout(resolve, 5000));
+
+                // Redirect to /pricing
+                window.location.href = '/pricing';
+
+            } catch (error) {
+                console.error('Error:', error);
+                // Handle error if needed
+            } finally {
+                submitButton.disabled = false; // Re-enable submit button
+            }
+        });
 
         const updateFrequencyVisibility = () => {
             const intervalSelect = document.getElementById('interval');
@@ -265,7 +327,6 @@
                 frequencyTwo.setAttribute('required', 'required');
             }
         }
-
     </script>
 
 </body>
