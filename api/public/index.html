@@ -92,6 +92,11 @@
         #paddleLogo {
             max-width: 80px;
         }
+
+        .formText {
+            color: #333;
+            font-size: 12px;
+        }
     </style>
 </head>
 
@@ -102,7 +107,19 @@
                 src="https://gdm-catalog-fmapi-prod.imgix.net/ProductLogo/af64f259-14e8-4c9a-a327-51c2d99cb487.png"
                 alt="">
         </div>
-        <h1>Inline Checkout Demo Builder</h1>
+        <h1>Paddle Checkout Demo Builder</h1>
+        <p class="formText">
+            This app enables all Paddlers to create realistic inline and overlay checkout experiences with a
+            prospect's or customer's branding in under five minutes.
+        </p>
+        <a href="https://www.notion.so/Step-by-step-Guide-Checkout-Demo-Builder-c0ba15e15a7d43fd998473a4517134cb" target="_blank" class="formText" style="font-weight: 600; color: #d7b500;">A step-by-step guide on how to use this tool can be found here.</a>
+        <p class="formText">
+            Fill out the form below to create a product and a price for that product, add a company and product logos,
+            their primary brand colour and their pre-checkout pricing page. Add an additional product and price if you want to showcase multi-product checkouts.
+        </p>
+        <p class="formText">
+            Wait up to 60 seconds after submitting the form and be redirected to your customised checkout journey.
+        </p>
         <h3>1. Create a product and a price</h3>
 
         <label for="productName" class="required">Product Name</label>
@@ -176,6 +193,10 @@
             placeholder="https://www.strava.com/subscribe">
 
         <input id="submit" type="submit" value="Submit">
+        <p class="formText">Most requests take between 20-30 seconds to complete. If the nothing happens when the
+            timer
+            reaches 0, please refresh and try again. If still nothing happens after one retry attempt, reach out to
+            Johan.</p>
     </form>
 
     <script>
@@ -207,9 +228,21 @@
             };
 
             const submitButton = document.getElementById('submit');
-            submitButton.disabled = true; // Disable submit button while processing
+            let countdown = 60;
+            submitButton.disabled = true;
             submitButton.style.backgroundColor = 'grey'
-            submitButton.value = 'Please wait up to 60 seconds'
+            const updateCountdown = () => {
+                if (submitButton.value !== "Complete! Get ready to be redirected...") {
+                    submitButton.value = `Please wait ${countdown} seconds`;
+                    countdown--;
+
+                    if (countdown >= 0) {
+                        setTimeout(updateCountdown, 1000);
+                    }
+                }
+            };
+
+            updateCountdown();
 
             try {
                 const response = await fetch('/settings', {
@@ -226,22 +259,20 @@
 
                 const data = await response.json();
 
-                // Save the settings ID to session storage
                 console.log(data.id)
-                sessionStorage.setItem('mySettingsId', data.id);
-                console.log('mySettingsId set on index.html:', data.id);
+                sessionStorage.setItem('mySettingsId', data.id)
+                console.log('mySettingsId set on index.html:', data.id)
 
-                // Wait for 5 seconds before redirecting
-                await new Promise(resolve => setTimeout(resolve, 5000));
+                submitButton.value = "Complete! Get ready to be redirected..."
 
-                // Redirect to /pricing
-                window.location.href = '/pricing';
+                await new Promise(resolve => setTimeout(resolve, 5000))
+
+                window.location.href = '/pricing'
 
             } catch (error) {
                 console.error('Error:', error);
-                // Handle error if needed
             } finally {
-                submitButton.disabled = false; // Re-enable submit button
+                submitButton.disabled = false;
             }
         });
 
