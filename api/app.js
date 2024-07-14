@@ -235,6 +235,7 @@ app.post('/settings', async (req, res) => {
 });
 
 app.post('/get-settings', async (req, res) => {
+    await connectToDatabase()
     const mySettingsId = req.body.id
     const returnedResult = await Settings.findById(mySettingsId).exec()
     console.log(returnedResult)
@@ -242,6 +243,7 @@ app.post('/get-settings', async (req, res) => {
 })
 
 app.post('/get-checkout-settings', async (req, res) => {
+    await connectToDatabase()
     const id = req.body.id
     const returnedResult = await Settings.findById(id).exec();
     console.log(returnedResult)
@@ -249,6 +251,7 @@ app.post('/get-checkout-settings', async (req, res) => {
 })
 
 app.post('/get-prices', async (req, res) => {
+    await connectToDatabase()
     const id = req.body.id
     const returnedResult = await Settings.findById(id).exec();
     const items = {
