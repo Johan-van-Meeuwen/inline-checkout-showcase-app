@@ -104,6 +104,17 @@
             color: #FF7900;
             margin: 8px 0px;
         }
+
+        .textLengthValidationError {
+            color: red;
+            display: none;
+        }
+
+        .error-message {
+            font-size: 12px;
+            color: red;
+            display: none;
+        }
     </style>
 </head>
 
@@ -115,48 +126,55 @@
                 alt="">
         </div>
         <h1>Paddle Checkout Demo Builder</h1>
-        <p class="formText">
-            This app enables all Paddlers to create realistic inline and overlay checkout experiences with a
-            prospect's or customer's branding in under five minutes.
-        </p>
+        <p class="formText"> This app enables all Paddlers to create realistic inline and overlay checkout experiences
+            with a prospect's or customer's branding in under five minutes.</p>
         <a href="https://www.notion.so/Step-by-step-Guide-Checkout-Demo-Builder-c0ba15e15a7d43fd998473a4517134cb"
-            target="_blank" class="formText" style="font-weight: 600; color: #d7b500;">A step-by-step guide will be
-            available in the future here, but for now, if you've any questions, reach out to Johan.</a>
-        <p class="formText">
-            Fill out the form below to create a product and a price for that product, add a company and product logos,
-            their primary brand colour and their pre-checkout pricing page. Add an additional product and price if you
-            want to showcase multi-product checkouts.
-        </p>
-        <p class="formText">
-            Wait up to 60 seconds after submitting the form and be redirected to your customised checkout journeys.
-        </p>
+            target="_blank" class="formText" style="font-weight: 600; color: #d7b500;">A step-by-step guide will
+            beavailable in the future here, but for now, if you've any questions, reach out to Johan.</a>
+        <p class="formText">Fill out the form below to create a product and a price for that product, add a company and
+            product logos, their primary brand colour and their pre-checkout pricing page. Add an additional product and
+            price if you want to showcase multi-product checkouts.</p>
+        <p class="formText">Wait up to 60 seconds after submitting the form and be redirected to your customised
+            checkout journeys.</p>
         <h3>1. Create a product and a price</h3>
 
+        <!-- Product Name -->
         <label for="productName" class="required">Product Name</label>
-        <input type="text" name="productName" id="productName" required placeholder="e.g. Strava" autocomplete="productName">
+        <input type="text" name="productName" id="productName" required placeholder="e.g. Strava"
+            autocomplete="productName" class="textLengthValidationValidatees">
+        <!-- <span class="textLengthValidationError">Must be between 2-100 characters</span> -->
+
+        <!-- Product Logo -->
         <label for="productImage">Product Logo</label>
-        <p class="formHelper">To get this, Google Image search your seller's logo (e.g. "Drift logo"), click on one to
-            open it up,
-            with the image enlarged right click on it, click "Copy Image Address" and paste that URL into the field
-            below.
-        </p>
         <input type="text" name="productImage" id="productImage"
-            placeholder="e.g. https://static-00.iconduck.com/assets.00/strava-icon-2048x2048-4fppqh38.png"
-            autocomplete="productImage">
+            placeholder="Google Image search logo, right click logo & 'Copy Image Address'" autocomplete="productImage">
+
+        <!-- Price Description -->
         <label for="priceDescription" class="required" autocomplete="name">Price Description (won't appear on
             checkout)</label>
-        <input type="text" name="priceDescription" id="priceDescription" required placeholder="e.g. Strava Pro Monthly Plan"
-            autocomplete="name">
+        <input type="text" name="priceDescription" id="priceDescription" required
+            placeholder="e.g. Strava Pro Monthly Plan" autocomplete="name" class="textLengthValidationValidatees">
+        <!-- <span class="textLengthValidationError">Must be between 2-100 characters</span> -->
+
+        <!-- Base Price -->
         <label for="basePrice" class="required">Base USD Price</label>
-        <p class="formHelper">Don't use decimal points. For example, if you want the base price to be $10.00, input
-            1000, for $5.99 input 599 etc.
-        </p>
-        <input type="text" name="basePrice" id="basePrice" required placeholder="e.g. 1000" autocomplete="name">
+        <input type="text" name="basePrice" id="basePrice" required
+            placeholder="Enter a number without decimal points (e.g. Input 1000 for $10.00)" autocomplete="name">
+        <span id="basePriceError" class="error-message">Please enter a number greater or equal to 100 without a decimal
+            point</span>
+
+        <!-- Price Name -->
         <label for="basePriceName" class="required">Price Name (will appear at checkout)</label>
-        <input type="text" name="basePriceName" id="basePriceName" placeholder="e.g. Strava Pro Monthly">
+        <input type="text" name="basePriceName" id="basePriceName" placeholder="e.g. Strava Pro Monthly"
+            class="textLengthValidationValidatees">
+        <!-- <span class="textLengthValidationError">Must be between 2-100 characters</span> -->
+
+        <!-- Quantity Selector -->
         <label for="priceQuantitySelect" class="required">Price Quantity (the quantity the checkout will load
             with)</label>
         <input type="text" name="priceQuantitySelect" id="priceQuantitySelect" placeholder="e.g. 5">
+
+        <!-- Interval -->
         <label for="interval" class="required">Recurring Interval</label>
         <select name="interval" id="interval" required onchange="updateFrequencyVisibility()">
             <option value="day">Day</option>
@@ -165,43 +183,62 @@
             <option value="year">Year</option>
             <option value="one-time">One-time</option>
         </select>
+
+        <!-- Frequency -->
         <label id="frequencyLabel" for="frequency" class="required">Frequency</label>
         <p class="formHelper">How many recurring intervals do you want to pass before a renewal takes place? For
-            example, if you've
-            selected "Month" for recurring interval, inputting 3 here will give you a price that recurs every 3 months.
-        </p>
-        <input type="text" name="frequency" id="frequency" placeholder= "e.g. 1" required>
+            example, if you've selected "Month" for recurring interval, inputting 3 here will give you a price that
+            recurs every 3 months.</p>
+        <input type="text" name="frequency" id="frequency" placeholder="e.g. 1" required>
 
+        <!-- Second Product -->
         <a id="secondPriceButton" href="#" onclick="provideSecondProductAndPriceInputs()">Add second product and
             price</a>
 
         <div id="secondProductAndPriceDiv" class="hidden">
+            <!-- 2nd Product Name -->
             <label for="productNameTwo">2nd Product Name</label>
-            <input type="text" name="productNameTwo" id="productNameTwo" placeholder="e.g. Drift" disabled>
+            <input type="text" name="productNameTwo" id="productNameTwo" placeholder="e.g. Drift" disabled
+                class="textLengthValidationValidatees">
+            <!-- <span class="textLengthValidationError">Must be between 2-100 characters</span> -->
+
+            <!-- 2nd Product Image -->
             <label for="productImageTwo">2nd Product Logo</label>
             <p class="formHelper">To get this, Google Image search your seller's logo (e.g. "Drift logo"), click on one
-                to open it up,
-                with the image enlarged right click on it, click "Copy Image Address" and paste that URL into the field
-                below.
-            </p>
-            <input type="text" name="productImageTwo" id="productImageTwo" placeholder="e.g. https://www.drift.com/wp-content/themes/drift-v3/dist/images/drift-logo-reg.svg"
+                to open it up, with the image enlarged right click on it, click "Copy Image Address" and paste that URL
+                into the field below.</p>
+            <input type="text" name="productImageTwo" id="productImageTwo"
+                placeholder="e.g. https://www.drift.com/wp-content/themes/drift-v3/dist/images/drift-logo-reg.svg"
                 disabled>
+
+            <!-- 2nd Price Description -->
             <label for="priceDescriptionTwo">2nd Price Description (won't appear at checkout)</label>
-            <input type="text" name="priceDescriptionTwo" id="priceDescriptionTwo" placeholder="e.g. Drift Pro Monthly Plan"
-                disabled>
+            <input type="text" name="priceDescriptionTwo" id="priceDescriptionTwo"
+                placeholder="e.g. Drift Pro Monthly Plan" disabled class="textLengthValidationValidatees">
+            <!-- <span class="textLengthValidationError">Must be between 2-100 characters</span> -->
+
+            <!-- 2nd Base Price -->
             <label for="basePriceTwo">2nd Base USD Price</label>
             <p class="formHelper">Don't use decimal points. For example, if you want the base price to be $10.00, input
-                1000, for $5.99 input 599 etc.
-            </p>
+                1000, for $5.99 input 599 etc. </p>
             <input type="text" name="basePriceTwo" id="basePriceTwo" placeholder="e.g. 1999" disabled>
+            <span id="basePriceTwoError" class="error-message">Please enter a number greater or equal to 100 without a
+                decimal point</span>
+
+            <!-- 2nd Price Name -->
             <label for="basePriceNameTwo">2nd Price Name (will appear at checkout)</label>
-            <input type="text" name="basePriceNameTwo" id="basePriceNameTwo" placeholder="e.g. Drift Pro Monthly" disabled>
+            <input type="text" name="basePriceNameTwo" id="basePriceNameTwo" placeholder="e.g. Drift Pro Monthly"
+                disabled class="textLengthValidationValidatees">
+            <!-- <span class="textLengthValidationError">Must be between 2-100 characters</span> -->
+
+            <!-- 2nd Price Quantity -->
             <label for="priceQuantitySelectTwo">2nd Price Quantity</label>
             <input type="text" name="priceQuantitySelectTwo" id="priceQuantitySelectTwo" placeholder="e.g. 15" disabled>
+
+            <!-- 2nd Interval -->
             <label for="intervalTwo">2nd Recurring Interval</label>
             <p class="formHelper">IMPORTANT: This must either match the recurring interval you've entered for your first
-                product and price or be one-time.
-            </p>
+                product and price or be one-time.</p>
             <select name="intervalTwo" id="intervalTwo" onchange="updateFrequencyVisibilityTwo()" disabled>
                 <option value="day">Day</option>
                 <option value="week">Week</option>
@@ -209,11 +246,12 @@
                 <option value="year">Year</option>
                 <option value="one-time">One-time</option>
             </select>
+
+            <!-- 2nd Frequency -->
             <label id="frequencyLabelTwo" for="frequencyTwo">2nd Frequency</label>
             <p class="formHelper">How many recurring intervals do you want to pass before a renewal takes place? For
-                example, if you've
-                selected "Month" for recurring interval, inputting 1 here will give you a price that recurs every month.
-            </p>
+                example, if you've selected "Month" for recurring interval, inputting 1 here will give you a price that
+                recurs every month.</p>
             <input type="text" name="frequencyTwo" id="frequencyTwo" placeholder="e.g. 1" disabled>
         </div>
 
@@ -236,7 +274,8 @@
             at the start
             (e.g. #fddd36).
         </p>
-        <label for="primaryColour" class="required">Primary Colour (hexcode values only - include the #, 3-8 characters):</label>
+        <label for="primaryColour" class="required">Primary Colour (hexcode values only - include the #, 3-8
+            characters):</label>
         <input type="text" name="primaryColour" id="primaryColour" required placeholder="e.g. #FD4C04">
 
         <h3>4. Enter seller's pricing page URL</h3>
@@ -411,6 +450,82 @@
                 frequencyTwo.setAttribute('required', 'required');
             }
         }
+
+        // Form validation
+        // const textLengthValidationErrors = document.querySelectorAll('.textLengthValidation')
+        // const textLengthValidationValidatees = document.querySelectorAll('.textLengthValidationValidatees') 
+
+        // textLengthValidationValidatees.forEach((validatee) => {
+        //     validatee.addEventListener('input', function () {
+        //         validateTextLength(validatee)
+        //     })
+        // })
+
+        // const validateTextLength = (validatee) => {
+        //     const value = validatee.value;
+        //     if (value.length >= 2 && value.length <= 100) {
+        //         productNameError.style.display = 'none';
+        //     } else {
+        //         productNameError.style.display = 'inline';
+        //     }
+        // };
+
+        const basePriceInput = document.getElementById('basePrice');
+        const basePriceError = document.getElementById('basePriceError');
+
+        basePriceInput.addEventListener('input', function () {
+            validateBasePriceNumber();
+        });
+
+        const validateBasePriceNumber = () => {
+            const value = basePriceInput.value;
+            if (/^\d+$/.test(value) && value > 100) {
+                basePriceInput.classList.remove('invalid');
+                basePriceInput.classList.add('valid');
+                basePriceError.style.display = 'none';
+            } else {
+                basePriceInput.classList.remove('valid');
+                basePriceInput.classList.add('invalid');
+                basePriceError.style.display = 'inline';
+            }
+        };
+
+        const basePriceTwoInput = document.getElementById('basePriceTwo');
+        const basePriceTwoError = document.getElementById('basePriceTwoError');
+
+        basePriceTwoInput.addEventListener('input', function () {
+            validateBasePriceTwoNumber();
+        });
+
+        const validateBasePriceTwoNumber = () => {
+            const value = basePriceTwoInput.value;
+            if (/^\d+$/.test(value) && value > 100) {
+                basePriceTwoInput.classList.remove('invalid');
+                basePriceTwoInput.classList.add('valid');
+                basePriceTwoError.style.display = 'none';
+            } else {
+                basePriceTwoInput.classList.remove('valid');
+                basePriceTwoInput.classList.add('invalid');
+                basePriceTwoError.style.display = 'inline';
+            }
+        };
+
+        const secondPriceButton = document.getElementById('secondPriceButton');
+        const productNameTwoInput = document.getElementById('productNameTwo');
+
+        secondPriceButton.addEventListener('click', function (event) {
+            event.preventDefault();
+            productNameTwoInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+
+        // Final validation before form submission
+        form.addEventListener('submit', function (event) {
+            validateBasePriceNumber();
+            if (basePriceInput.classList.contains('invalid')) {
+                event.preventDefault();
+                alert('Please correct the errors in the form.');
+            }
+        });
     </script>
 
 </body>
