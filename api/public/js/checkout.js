@@ -24,7 +24,6 @@ function fetchCheckoutSettings() {
                 }
                 if (rules[i].selectorText === '.backgroundBeams') {
                     rules[i].style.setProperty('--primary-color', `${response.primaryColour}40`);
-                    break;
                 }
             }
 
