@@ -44,6 +44,7 @@ fetch('/env', {
 })
     .then(response => response.json())
     .then(data => {
+        console.log(data)
         let clientSideToken = data.clientSideToken;
 
         Paddle.Environment.set("sandbox");

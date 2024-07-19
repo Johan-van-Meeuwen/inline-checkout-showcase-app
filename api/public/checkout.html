@@ -12,115 +12,118 @@
     <script src="https://kit.fontawesome.com/6e759bf7c0.js" crossorigin="anonymous"></script>
     <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
     <script type="text/javascript">
+        function initializePaddle() {
+            return fetch('/env', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id: sessionStorage.getItem('mySettingsId') })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Got token...');
+                    let clientSideToken = data.clientSideToken;
 
-        fetch('/env', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ id: sessionStorage.getItem('mySettingsId') })
-        })
-            .then(response => response.json())
-            .then(data => {
-                let clientSideToken = data.clientSideToken;
-
-                Paddle.Environment.set("sandbox");
-                Paddle.Initialize({
-                    token: clientSideToken,
-                    eventCallback: function (data) {
-                        if (data.type !== "checkout.ping.size") {
-                            console.log(data)
-                            let currencySymbols = document.getElementsByClassName('currencySymbol')
-                            for (const key in currencySymbols) {
-                                if (currencySymbols.hasOwnProperty(key)) {
-                                    const element = currencySymbols[key];
-                                    if (element) {
-                                        if (data.data.currency_code === 'GBP') {
-                                            element.innerText = '£';
-                                        } else if (data.data.currency_code === 'USD') {
-                                            element.innerText = '$';
-                                        } else if (data.data.currency_code === 'EUR') {
-                                            element.innerText = '€';
-                                        } else {
-                                            element.innerText = `${data.data.currency_code} `
+                    Paddle.Environment.set("sandbox");
+                    Paddle.Initialize({
+                        token: clientSideToken,
+                        eventCallback: function (data) {
+                            if (data.type !== "checkout.ping.size") {
+                                console.log(data);
+                                let currencySymbols = document.getElementsByClassName('currencySymbol');
+                                for (const key in currencySymbols) {
+                                    if (currencySymbols.hasOwnProperty(key)) {
+                                        const element = currencySymbols[key];
+                                        if (element) {
+                                            if (data.data.currency_code === 'GBP') {
+                                                element.innerText = '£';
+                                            } else if (data.data.currency_code === 'USD') {
+                                                element.innerText = '$';
+                                            } else if (data.data.currency_code === 'EUR') {
+                                                element.innerText = '€';
+                                            } else {
+                                                element.innerText = `${data.data.currency_code} `;
+                                            }
                                         }
                                     }
                                 }
-                            }
-                            document.getElementById('grandTotalAmount').innerText = data.data.totals.total.toFixed(2)
-                            document.getElementById('priceQuantity').innerText = data.data.items[0].quantity
-                            document.getElementById('priceName').innerText = data.data.items[0].price_name
-                            document.getElementById('productSubtotal').innerText = data.data.items[0].totals.subtotal.toFixed(2)
+                                document.getElementById('grandTotalAmount').innerText = data.data.totals.total.toFixed(2);
+                                document.getElementById('priceQuantity').innerText = data.data.items[0].quantity;
+                                document.getElementById('priceName').innerText = data.data.items[0].price_name;
+                                document.getElementById('productSubtotal').innerText = data.data.items[0].totals.subtotal.toFixed(2);
 
-                            if (data.data.items.length === 2 && data.name === 'checkout.loaded') {
-                                const pricingTable = document.getElementById('pricingTable');
-                                const secondProductLineRow = document.createElement('tr')
-                                secondProductLineRow.id = 'secondProductLine'
-                                secondProductLineRow.innerHTML = `
-                                        <td class="greyText">
-                                            <div class="quantityAndPrice">
-                                                <div class="quantityAdjuster">
-                                                    <a class="decreaseQuantityAdjuster" href="#" onclick="decreaseCheckoutQuantityTwo()">-</a>
-                                                    <span id="priceQuantityTwo">${data.data.items[1].quantity}</span>
-                                                    <a class="increaseQuantityAdjuster" href="#" onclick="increaseCheckoutQuantityTwo()">+</a>
-                                                    
-                                                </div>
-                                                <span id="priceName">${data.data.items[1].price_name}</span>
+                                if (data.data.items.length === 2 && data.name === 'checkout.loaded') {
+                                    const pricingTable = document.getElementById('pricingTable');
+                                    const secondProductLineRow = document.createElement('tr');
+                                    secondProductLineRow.id = 'secondProductLine';
+                                    secondProductLineRow.innerHTML = `
+                                    <td class="greyText">
+                                        <div class="quantityAndPrice">
+                                            <div class="quantityAdjuster">
+                                                <a class="decreaseQuantityAdjuster" href="#" onclick="decreaseCheckoutQuantityTwo()">-</a>
+                                                <span id="priceQuantityTwo">${data.data.items[1].quantity}</span>
+                                                <a class="increaseQuantityAdjuster" href="#" onclick="increaseCheckoutQuantityTwo()">+</a>
                                             </div>
-                                        </td>
-                                        <td class="greyText"><span class="currencySymbol">£</span><span id="productSubtotalTwo">${data.data.items[1].totals.subtotal.toFixed(2)}</span></td>
-                                `
-
-                                const productLineRow = document.getElementById('productLine');
-                                if (productLineRow) {
-                                    productLineRow.insertAdjacentElement('afterend', secondProductLineRow);
-                                } else {
-                                    console.error('Product line element not found.');
-                                }
-                            } else if (data.data.items.length === 2 && data.name === 'checkout.items.updated') {
-                                document.getElementById('productSubtotalTwo').innerText = data.data.items[1].totals.subtotal.toFixed(2)
-                            }
-
-                            document.getElementById('totalSubtotal').innerText = data.data.totals.subtotal.toFixed(2)
-                            document.getElementById('taxTotal').innerText = data.data.totals.tax.toFixed(2)
-                            document.getElementById('totalToday').innerText = data.data.totals.total.toFixed(2)
-
-                            if (data.data.recurring_totals) {
-                                document.getElementById('recurringTotal').innerText = data.data.recurring_totals.total.toFixed(2)
-                                document.getElementById('purchaseType').innerText = "Subscription"
-                                if (data.data.items[0].billing_cycle === null) {
-                                    if (data.data.items[1].billing_cycle.frequency === 1) {
-                                        document.getElementById('recurringInterval').innerText = data.data.items[1].billing_cycle.interval
+                                            <span id="priceName">${data.data.items[1].price_name}</span>
+                                        </div>
+                                    </td>
+                                    <td class="greyText"><span class="currencySymbol">£</span><span id="productSubtotalTwo">${data.data.items[1].totals.subtotal.toFixed(2)}</span></td>
+                                `;
+                                    const productLineRow = document.getElementById('productLine');
+                                    if (productLineRow) {
+                                        productLineRow.insertAdjacentElement('afterend', secondProductLineRow);
                                     } else {
-                                        document.getElementById('recurringInterval').innerText = `${data.data.items[1].billing_cycle.frequency} ${data.data.items[1].billing_cycle.interval}s`
+                                        console.error('Product line element not found.');
+                                    }
+                                } else if (data.data.items.length === 2 && data.name === 'checkout.items.updated') {
+                                    document.getElementById('productSubtotalTwo').innerText = data.data.items[1].totals.subtotal.toFixed(2);
+                                }
+
+                                document.getElementById('totalSubtotal').innerText = data.data.totals.subtotal.toFixed(2);
+                                document.getElementById('taxTotal').innerText = data.data.totals.tax.toFixed(2);
+                                document.getElementById('totalToday').innerText = data.data.totals.total.toFixed(2);
+
+                                if (data.data.recurring_totals) {
+                                    document.getElementById('recurringTotal').innerText = data.data.recurring_totals.total.toFixed(2);
+                                    document.getElementById('purchaseType').innerText = "Subscription";
+                                    if (data.data.items[0].billing_cycle === null) {
+                                        if (data.data.items[1].billing_cycle.frequency === 1) {
+                                            document.getElementById('recurringInterval').innerText = data.data.items[1].billing_cycle.interval;
+                                        } else {
+                                            document.getElementById('recurringInterval').innerText = `${data.data.items[1].billing_cycle.frequency} ${data.data.items[1].billing_cycle.interval}s`;
+                                        }
+                                    } else {
+                                        if (data.data.items[0].billing_cycle.frequency === 1) {
+                                            document.getElementById('recurringInterval').innerText = data.data.items[0].billing_cycle.interval;
+                                        } else {
+                                            document.getElementById('recurringInterval').innerText = `${data.data.items[0].billing_cycle.frequency} ${data.data.items[0].billing_cycle.interval}s`;
+                                        }
                                     }
                                 } else {
-                                    if (data.data.items[0].billing_cycle.frequency === 1) {
-                                        document.getElementById('recurringInterval').innerText = data.data.items[0].billing_cycle.interval
-                                    } else {
-                                        document.getElementById('recurringInterval').innerText = `${data.data.items[0].billing_cycle.frequency} ${data.data.items[0].billing_cycle.interval}s`
-                                    }
+                                    document.getElementById('recurringPrice').classList.add('hidden');
+                                    document.getElementById('purchaseType').innerText = "One-time purchase";
                                 }
-                            } else {
-                                document.getElementById('recurringPrice').classList.add('hidden')
-                                document.getElementById('purchaseType').innerText = "One-time purchase"
+
+                                document.getElementById('currencyLabel').innerText = data.data.currency_code;
                             }
 
-                            document.getElementById('currencyLabel').innerText = data.data.currency_code
+                            if (data.name === 'checkout.customer.created') {
+                                document.getElementById('yourDetails').classList.remove('brandedText');
+                                document.getElementById('payment').classList.add('brandedText');
+                            }
                         }
+                    });
 
-                        if (data.name === 'checkout.customer.created') {
-                            document.getElementById('yourDetails').classList.remove('brandedText')
-                            document.getElementById('payment').classList.add('brandedText')
-                        }
-                    }
+                    return clientSideToken;
+                })
+                .catch(error => {
+                    console.error('Error fetching environment variables:', error);
+                    return Promise.reject(error);
                 });
-            })
-            .catch(error => {
-                console.error('Error fetching environment variables:', error);
-            });
+        }
+        let paddleInitialization = initializePaddle();
     </script>
-    <script src="/js/checkout.js"></script>
 </head>
 
 <body>
@@ -202,6 +205,7 @@
 
         </div>
     </div>
+    <script src="/js/checkout.js"></script>
 </body>
 
 </html>
