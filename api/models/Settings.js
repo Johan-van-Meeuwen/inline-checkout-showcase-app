@@ -20,7 +20,8 @@ const settingsSchema = new mongoose.Schema({
     logo: { type: String },
     primaryColour: { type: String },
     preCheckoutUrl: { type: String },
-    preCheckoutUrlApiFlashUrl: { type: String }
+    preCheckoutUrlApiFlashUrl: { type: String },
+    inlineVariant: { type: String }
 })
 
 const Settings = new mongoose.model('Settings', settingsSchema)

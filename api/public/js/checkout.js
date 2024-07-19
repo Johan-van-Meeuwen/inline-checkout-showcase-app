@@ -64,7 +64,7 @@ const openCheckout = (items) => {
             displayMode: "inline",
             frameTarget: "checkoutContainer",
             frameInitialHeight: "450",
-            frameStyle: "width: 100%; min-width: 410px; background-color: transparent; border: none;"
+            frameStyle: "width: 100%; min-width: 410px; background-color: transparent; border: none;",
         },
         items: items
     })

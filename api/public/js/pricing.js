@@ -35,7 +35,13 @@ fetch('/get-settings', {
         console.log(error)
     })
 
-fetch('/env')
+fetch('/env', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ id: sessionStorage.getItem('mySettingsId') })
+})
     .then(response => response.json())
     .then(data => {
         let clientSideToken = data.clientSideToken;

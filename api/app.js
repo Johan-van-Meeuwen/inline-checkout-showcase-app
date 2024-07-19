@@ -11,6 +11,8 @@ import dotenv from 'dotenv'
 dotenv.config()
 const apiToken = process.env.API_TOKEN;
 const clientSideToken = process.env.CLIENT_SIDE_TOKEN;
+const opcApiToken = process.env.OPC_API_TOKEN;
+const opcClientSideToken = process.env.OPC_CLIENT_SIDE_TOKEN;
 const apiFlashKey = process.env.API_FLASH_KEY;
 
 const app = express()
@@ -21,10 +23,20 @@ const __dirname = path.dirname(__filename)
 
 app.use(express.static(__dirname + '/public'))
 
-app.get('/env', (req, res) => {
-    res.json({
-        clientSideToken: clientSideToken,
-    });
+app.post('/env', async (req, res) => {
+    await connectToDatabase()
+    const id = req.body.id
+    const returnedResult = await Settings.findById(id).exec()
+    if (returnedResult.inlineVariant === 'standard') {
+        res.json({
+            clientSideToken: clientSideToken
+        });
+    } else {
+        res.json({
+            clientSideToken: opcClientSideToken
+        });
+    }
+    
 });
 
 app.get('/', (req, res) => {
@@ -110,7 +122,8 @@ app.post('/settings', async (req, res) => {
         frequencyTwo,
         logo,
         primaryColour,
-        preCheckoutUrl
+        preCheckoutUrl,
+        inlineVariant
     } = req.body;
 
     let productIdTwo;
@@ -128,7 +141,7 @@ app.post('/settings', async (req, res) => {
     try {
         const productResponse = await axios.post('https://sandbox-api.paddle.com/products', createProductRequest, {
             headers: {
-                'Authorization': `Bearer ${apiToken}`,
+                'Authorization': `Bearer ${inlineVariant === 'standard' ? apiToken : opcApiToken}`,
                 'Content-Type': 'application/json'
             }
         });
@@ -148,7 +161,7 @@ app.post('/settings', async (req, res) => {
 
         const priceResponse = await axios.post('https://sandbox-api.paddle.com/prices', createPricesRequest, {
             headers: {
-                'Authorization': `Bearer ${apiToken}`,
+                'Authorization': `Bearer ${inlineVariant === 'standard' ? apiToken : opcApiToken}`,
                 'Content-Type': 'application/json'
             }
         });
@@ -165,7 +178,7 @@ app.post('/settings', async (req, res) => {
 
             const productResponseTwo = await axios.post('https://sandbox-api.paddle.com/products', createProductRequestTwo, {
                 headers: {
-                    'Authorization': `Bearer ${apiToken}`,
+                    'Authorization': `Bearer ${inlineVariant === 'standard' ? apiToken : opcApiToken}`,
                     'Content-Type': 'application/json'
                 }
             });
@@ -185,7 +198,7 @@ app.post('/settings', async (req, res) => {
 
             const priceResponseTwo = await axios.post('https://sandbox-api.paddle.com/prices', createPricesRequestTwo, {
                 headers: {
-                    'Authorization': `Bearer ${apiToken}`,
+                    'Authorization': `Bearer ${inlineVariant === 'standard' ? apiToken : opcApiToken}`,
                     'Content-Type': 'application/json'
                 }
             });
@@ -216,7 +229,8 @@ app.post('/settings', async (req, res) => {
             logo: logo,
             primaryColour: primaryColour,
             preCheckoutUrl: preCheckoutUrl,
-            preCheckoutUrlApiFlashUrl: preCheckoutUrlApiFlashUrl
+            preCheckoutUrlApiFlashUrl: preCheckoutUrlApiFlashUrl,
+            inlineVariant: inlineVariant
         });
 
         const settingsCreated = Date.now();
