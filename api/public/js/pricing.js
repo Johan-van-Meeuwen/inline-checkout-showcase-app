@@ -54,6 +54,7 @@ fetch('/env', {
                 console.log(data)
             }
         });
+        console.log('Paddle Initialized...')
     })
     .catch(error => {
         console.error('Error fetching environment variables:', error);
