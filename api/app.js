@@ -106,7 +106,7 @@ app.post('/settings', async (req, res) => {
     const {
         productName,
         productImage,
-        priceDescription,
+        // priceDescription,
         basePrice,
         basePriceName,
         priceQuantitySelect,
@@ -114,7 +114,7 @@ app.post('/settings', async (req, res) => {
         frequency,
         productNameTwo,
         productImageTwo,
-        priceDescriptionTwo,
+        // priceDescriptionTwo,
         basePriceTwo,
         basePriceNameTwo,
         priceQuantitySelectTwo,
@@ -151,7 +151,7 @@ app.post('/settings', async (req, res) => {
         let billingCycle = interval === 'one-time' ? null : { frequency: Number(frequency), interval: interval };
 
         const createPricesRequest = {
-            description: priceDescription,
+            description: basePriceName,
             product_id: productId,
             unit_price: { amount: basePrice, currency_code: "GBP" },
             name: basePriceName,
@@ -188,7 +188,7 @@ app.post('/settings', async (req, res) => {
             let billingCycleTwo = intervalTwo === 'one-time' ? null : { frequency: Number(frequencyTwo), interval: intervalTwo };
 
             const createPricesRequestTwo = {
-                description: priceDescriptionTwo,
+                description: basePriceNameTwo,
                 product_id: productIdTwo,
                 unit_price: { amount: basePriceTwo, currency_code: "GBP" },
                 name: basePriceNameTwo,
@@ -212,7 +212,7 @@ app.post('/settings', async (req, res) => {
         const newlyCreatedSettings = await Settings.create({
             productId: productId,
             priceId: priceId,
-            priceDescription: priceDescription,
+            priceDescription: basePriceName,
             basePrice: basePrice,
             basePriceName: basePriceName,
             priceQuantity: priceQuantitySelect,
@@ -220,7 +220,7 @@ app.post('/settings', async (req, res) => {
             frequency: frequency,
             productIdTwo: productIdTwo,
             priceIdTwo: priceIdTwo,
-            priceDescriptionTwo: priceDescriptionTwo,
+            priceDescriptionTwo: basePriceNameTwo,
             basePriceTwo: basePriceTwo,
             basePriceNameTwo: basePriceNameTwo,
             priceQuantityTwo: priceQuantitySelectTwo,
