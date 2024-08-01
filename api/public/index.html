@@ -474,14 +474,10 @@
         const validatePriceQuantity = () => {
             const value = priceQuantitySelectInput.value;
             if (!isNaN(value) && value.trim() !== '') {
-                console.log(typeof value)
-                console.log('Number!')
                 priceQuantitySelectInput.classList.remove('invalid');
                 priceQuantitySelectInput.classList.add('valid');
                 priceQuantitySelectError.style.display = 'none';
             } else {
-                console.log(typeof value)
-                console.log('Not a number!')
                 priceQuantitySelectError.classList.remove('valid');
                 priceQuantitySelectError.classList.add('invalid');
                 priceQuantitySelectError.style.display = 'inline';
