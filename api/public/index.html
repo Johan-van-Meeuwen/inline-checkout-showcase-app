@@ -432,8 +432,8 @@
         });
 
         const validateBasePriceNumber = () => {
-            const value = basePriceInput.value;
-            if (/^\d+$/.test(value) && value >= 100) {
+            const value = Number(basePriceInput.value);
+            if (/^\d+$/.test(basePriceInput.value) && (value === 0 || value >= 100)) {
                 basePriceInput.classList.remove('invalid');
                 basePriceInput.classList.add('valid');
                 basePriceError.style.display = 'none';
