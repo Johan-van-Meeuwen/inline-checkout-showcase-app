@@ -76,13 +76,14 @@
                                     } else {
                                         console.error('Product line element not found.');
                                     }
-                                } else if (data.data.items.length === 2 && data.name === 'checkout.items.updated') {
+                                } else if (data.data.items.length === 2 && (data.name === 'checkout.items.updated' || data.name === 'checkout.customer.updated')) {
                                     document.getElementById('productSubtotalTwo').innerText = data.data.items[1].totals.subtotal.toFixed(2);
                                 }
 
                                 document.getElementById('totalSubtotal').innerText = data.data.totals.subtotal.toFixed(2);
                                 document.getElementById('taxTotal').innerText = data.data.totals.tax.toFixed(2);
                                 document.getElementById('totalToday').innerText = data.data.totals.total.toFixed(2);
+                                document.getElementById('recurringTotal').innerText = data.data.recurring_totals.total.toFixed(2);
 
                                 if (data.data.recurring_totals) {
                                     document.getElementById('recurringTotal').innerText = data.data.recurring_totals.total.toFixed(2);
