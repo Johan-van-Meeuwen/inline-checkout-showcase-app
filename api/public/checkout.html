@@ -83,7 +83,6 @@
                                 document.getElementById('totalSubtotal').innerText = data.data.totals.subtotal.toFixed(2);
                                 document.getElementById('taxTotal').innerText = data.data.totals.tax.toFixed(2);
                                 document.getElementById('totalToday').innerText = data.data.totals.total.toFixed(2);
-                                document.getElementById('recurringTotal').innerText = data.data.recurring_totals.total.toFixed(2);
 
                                 if (data.data.recurring_totals) {
                                     document.getElementById('recurringTotal').innerText = data.data.recurring_totals.total.toFixed(2);
