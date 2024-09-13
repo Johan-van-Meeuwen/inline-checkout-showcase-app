@@ -153,7 +153,7 @@ app.post('/settings', async (req, res) => {
         const createPricesRequest = {
             description: basePriceName,
             product_id: productId,
-            unit_price: { amount: basePrice, currency_code: "GBP" },
+            unit_price: { amount: basePrice, currency_code: "USD" },
             name: basePriceName,
             billing_cycle: billingCycle,
             quantity: { minimum: 1, maximum: 999999 }
@@ -190,7 +190,7 @@ app.post('/settings', async (req, res) => {
             const createPricesRequestTwo = {
                 description: basePriceNameTwo,
                 product_id: productIdTwo,
-                unit_price: { amount: basePriceTwo, currency_code: "GBP" },
+                unit_price: { amount: basePriceTwo, currency_code: "USD" },
                 name: basePriceNameTwo,
                 billing_cycle: billingCycleTwo,
                 quantity: { minimum: 1, maximum: 999999 }
