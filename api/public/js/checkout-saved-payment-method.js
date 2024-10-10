@@ -1,4 +1,5 @@
 let itemList = [];
+let customerAuthToken = '';
 
 function fetchCheckoutSettings() {
     return fetch('/get-checkout-settings', {
@@ -28,25 +29,25 @@ function fetchCheckoutSettings() {
                 }
             }
 
-            if (response.priceIdTwo) {
-                itemList = [
-                    {
-                        priceId: response.priceId,
-                        quantity: Number(response.priceQuantity)
-                    },
-                    {
-                        priceId: response.priceIdTwo,
-                        quantity: Number(response.priceQuantityTwo)
-                    }
-                ];
-            } else {
-                itemList = [
-                    {
-                        priceId: response.priceId,
-                        quantity: Number(response.priceQuantity)
-                    }
-                ];
-            }
+            itemList = [
+                {
+                    priceId: response.spmPriceId,
+                    quantity: Number(response.spmQuantitySelect)
+                }
+            ]
+
+            fetch('/get-customer-auth-token', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ customerId: sessionStorage.getItem('customerId'), mySettingsId: sessionStorage.getItem('mySettingsId') })
+            })
+                .then(response => response.json())
+                .then(response => {
+                    console.log(response)
+                })
+
             console.log('Fetched checkout settings');
         })
         .catch(error => {
@@ -97,22 +98,11 @@ const decreaseCheckoutQuantity = () => {
     })
         .then(response => response.json())
         .then(response => {
-            if (!response.hasOwnProperty('priceTwoId')) {
+            if (response.hasOwnProperty('spmPriceId')) {
                 Paddle.Checkout.updateItems([
                     {
-                        priceId: response.priceOneId,
+                        priceId: response.spmPriceId,
                         quantity: Number(priceQuantity.innerText)
-                    }
-                ])
-            } else {
-                Paddle.Checkout.updateItems([
-                    {
-                        priceId: response.priceOneId,
-                        quantity: Number(priceQuantity.innerText)
-                    },
-                    {
-                        priceId: response.priceTwoId,
-                        quantity: Number(priceQuantityTwo.innerText)
                     }
                 ])
             }
@@ -136,22 +126,11 @@ const increaseCheckoutQuantity = () => {
     })
         .then(response => response.json())
         .then(response => {
-            if (!response.hasOwnProperty('priceTwoId')) {
+            if (response.hasOwnProperty('spmPriceId')) {
                 Paddle.Checkout.updateItems([
                     {
-                        priceId: response.priceOneId,
+                        priceId: response.spmPriceId,
                         quantity: Number(priceQuantity.innerText)
-                    }
-                ])
-            } else {
-                Paddle.Checkout.updateItems([
-                    {
-                        priceId: response.priceOneId,
-                        quantity: Number(priceQuantity.innerText)
-                    },
-                    {
-                        priceId: response.priceTwoId,
-                        quantity: Number(priceQuantityTwo.innerText)
                     }
                 ])
             }

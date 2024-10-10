@@ -50,12 +50,12 @@
     border-radius: 50%;
 }
 
-input:checked + .slider {
+input:checked+.slider {
     --primary-colour: rgb(51, 65, 85);
     background-color: var(--primary-colour);
 }
 
-input:checked + .slider:before {
+input:checked+.slider:before {
     transform: translateX(26px);
 }
 
@@ -68,7 +68,7 @@ input:checked + .slider:before {
     padding: 8px 0px;
 }
 
-.bottom-nav > a {
+.bottom-nav>a {
     margin-left: 12px;
     color: rgb(51, 65, 85);
     font-size: 18px;
@@ -121,23 +121,31 @@ body {
     display: flex;
 }
 
+#successPageContainer {
+    display: flex;
+}
+
 #leftContainer {
     display: flex;
     flex-direction: column;
     flex: 1px;
-    padding: 40px 64px 112px 64px;
+    padding: 40px 64px;
     box-shadow: 0px 25px 50px -12px rgb(0 0 0 / .25);
     min-height: 100vh;
     max-width: 410px;
     z-index: 2;
 }
 
-#logo {
+#desktopLogo {
     max-height: 48px;
     height: auto;
     width: auto;
     align-self: self-start;
     padding-left: 10px;
+}
+
+#mobileLogo {
+    display: none;
 }
 
 #breadcrumbs {
@@ -199,7 +207,8 @@ a {
     padding: 180px 0px 40px 0px;
     max-width: 512px;
     z-index: 2;
-    transition: opacity 1.2s ease, top 1.2s ease; /* Add transition for smooth movement */
+    transition: opacity 1.2s ease, top 1.2s ease;
+    /* Add transition for smooth movement */
 }
 
 #productLabels {
@@ -362,4 +371,107 @@ tr {
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+@media (max-width: 600px) {
+    body {
+        padding: 0;
+        margin: 0;
+    }
+
+    #pageContainer {
+        flex-direction: column-reverse;
+        align-items: center;
+    }
+
+    #successPageContainer {
+        align-items: center;
+    }
+
+    #pricingTableSection {
+        display: none;
+    }
+
+    /* Bring this back if we want to add/remove quantity on mobile*/
+    /* #pricingTableSection {
+        margin-top: 0;
+    }
+
+    #productLine {
+        justify-content: center
+    }
+
+    .quantityAndPrice{
+        display: flex;
+        flex-direction: column-reverse;
+    }
+
+    .quantityAdjuster {
+        padding: 12px;
+        border-radius: 20px;
+    }
+
+    .quantityAdjuster a,
+    .quantityAdjuster span {
+        font-size: 20px;
+    }
+
+    #productLine .greyText:nth-of-type(2) {
+        display: none;
+    }
+
+    #subtotalLine {
+        display: none;
+    }
+
+    #taxesLine {
+        display: none;
+    }
+
+    #totalPrice {
+        display: none;
+    }
+
+    #taxesLine {
+        display: none;
+    }
+
+    #recurringPrice {
+        display: none;
+    } */
+
+    #rightContainer {
+        margin: 0;
+        padding: 0;
+        max-width: 358px;
+    }
+
+    #leftContainer {
+        margin-top: 24px;
+        padding: 0;
+        /* background-color: rgba(0, 0, 0, 0) */
+        /* max-width: 358px; */
+        min-height: 0;
+    }
+
+    #breadcrumbs {
+        margin: 0;
+    }
+
+    #desktopLogo {
+        display: none;
+    }
+
+    #mobileLogo {
+        display: block;
+        max-height: 48px;
+        height: auto;
+        width: auto;
+        align-self: self-start;
+        padding-bottom: 20px;
+    }
+
+    #rightAligningContainer {
+        padding: 32px 0px 0px 0px;
+    }
 }

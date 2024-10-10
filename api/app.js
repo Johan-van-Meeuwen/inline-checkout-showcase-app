@@ -55,6 +55,10 @@ app.get('/success', (req, res) => {
     res.sendFile(path.join(__dirname, '/public/success.html'))
 })
 
+app.get('/checkout-saved-payment-method', (req, res) => {
+    res.sendFile(path.join(__dirname, '/public/checkout-saved-payment-method.html'))
+})
+
 app.use(express.urlencoded({ extended: true }))
 
 function getApiFlashUrl(preCheckoutUrl) {
@@ -103,7 +107,6 @@ function getApiFlashUrl(preCheckoutUrl) {
 app.post('/settings', async (req, res) => {
     await connectToDatabase();
 
-    console.log(req.body);
     const requestReceived = Date.now();
     console.log(`${requestReceived}: /settings request received`);
 
@@ -127,14 +130,25 @@ app.post('/settings', async (req, res) => {
         logo,
         primaryColour,
         preCheckoutUrl,
-        inlineVariant
+        inlineVariant,
+        spmProductName,
+        spmProductImage,
+        spmBasePriceName,
+        spmBasePrice,
+        spmQuantitySelect
     } = req.body;
+
+    console.log(req.body);
 
     let productIdTwo;
     let priceIdTwo;
 
+    let spmProductId;
+    let spmPriceId;
+
     const placeholderImageUrl = 'https://icons.veryicon.com/png/o/miscellaneous/fu-jia-intranet/product-29.png';
     const placeholderImageUrlTwo = 'https://cdn-icons-png.flaticon.com/256/1311/1311144.png';
+    const placeholderSpmImageUrl = 'https://cdn-icons-png.flaticon.com/256/1311/1311144.png';
 
     const createProductRequest = {
         name: productName,
@@ -211,6 +225,42 @@ app.post('/settings', async (req, res) => {
             console.log(`${Date.now()}: Price 2 created ${priceIdTwo}`);
         }
 
+        if (spmProductName) {
+            const createSpmProductRequest = {
+                name: spmProductName,
+                tax_category: "standard",
+                image_url: spmProductImage ? spmProductImage : placeholderSpmImageUrl
+            };
+
+            const spmProductResponse = await axios.post('https://sandbox-api.paddle.com/products', createSpmProductRequest, {
+                headers: {
+                    'Authorization': `Bearer ${inlineVariant === 'standard' ? apiToken : opcApiToken}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            spmProductId = spmProductResponse.data.data.id;
+            console.log(`${Date.now()}: SPM Product created ${spmProductId}`);
+
+            const createSpmPriceRequest = {
+                description: spmBasePriceName,
+                product_id: spmProductId,
+                unit_price: { amount: spmBasePrice, currency_code: "USD" },
+                name: spmBasePriceName,
+                quantity: { minimum: 1, maximum: 999999 }
+            };
+
+            const spmPriceResponse = await axios.post('https://sandbox-api.paddle.com/prices', createSpmPriceRequest, {
+                headers: {
+                    'Authorization': `Bearer ${inlineVariant === 'standard' ? apiToken : opcApiToken}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            spmPriceId = spmPriceResponse.data.data.id;
+            console.log(`${Date.now()}: SPM Price created ${spmPriceId}`);
+        }
+
         const preCheckoutUrlApiFlashUrl = await getApiFlashUrl(preCheckoutUrl);
 
         const newlyCreatedSettings = await Settings.create({
@@ -234,7 +284,14 @@ app.post('/settings', async (req, res) => {
             primaryColour: primaryColour,
             preCheckoutUrl: preCheckoutUrl,
             preCheckoutUrlApiFlashUrl: preCheckoutUrlApiFlashUrl,
-            inlineVariant: inlineVariant
+            inlineVariant: inlineVariant,
+            spmProductId: spmProductId,
+            spmPriceId: spmPriceId,
+            spmProductName: spmProductName,
+            spmProductImage: spmProductImage, 
+            spmBasePriceName: spmBasePriceName,
+            spmBasePrice: spmBasePrice,
+            spmQuantitySelect: spmQuantitySelect
         });
 
         const settingsCreated = Date.now();
@@ -276,11 +333,41 @@ app.post('/get-prices', async (req, res) => {
         priceOneId: returnedResult.priceId,
         priceOneQuantity: returnedResult.priceQuantity,
         priceTwoId: returnedResult.priceIdTwo,
-        priceTwoQuantity: returnedResult.priceQuantityTwo
+        priceTwoQuantity: returnedResult.priceQuantityTwo,
+        spmPriceId: returnedResult.spmPriceId,
+        spmQuantitySelect: returnedResult.spmQuantitySelect
     }
     res.json(items)
 })
 
-app.listen('3000', (req, res) => {
-    console.log('Server is listening on port 3000')
+app.post('/get-customer-auth-token', async (req, res) => {
+    await connectToDatabase()
+    const mySettingsId = req.body.mySettingsId
+    const returnedResult = await Settings.findById(mySettingsId).exec()
+    const inlineVariant = returnedResult.inlineVariant
+    console.log(inlineVariant)
+
+    const customerId = req.body.customerId
+    console.log(apiToken)
+    console.log(opcApiToken)
+
+    // FIX THIS:
+    // const customerAuthTokenResponse = await axios.post(
+    //     `https://sandbox-api.paddle.com/customers/${customerId}/auth-token`,
+    //     {
+    //         headers: {
+    //             'Authorization': `Bearer ${returnedResult.inlineVariant === 'standard' ? apiToken : opcApiToken}`,
+    //             // 'Authorization': `Bearer 41f3631dbfbb138228a79eb3f57179604339b5f459ed0f5845`,
+                
+    //             'Content-Type': 'application/json'
+    //         }
+    //     }
+    // );
+    // console.log(customerAuthTokenResponse)
+    // const customerAuthToken = customerAuthTokenResponse.data.data.customer_auth_token
+    // res.json(customerAuthToken)
+})
+
+app.listen('8000', (req, res) => {
+    console.log('Server is listening on port 8000')
 })
