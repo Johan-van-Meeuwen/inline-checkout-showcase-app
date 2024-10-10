@@ -57,11 +57,13 @@ const openCheckout = (items) => {
     Paddle.Checkout.open({
         settings: {
             displayMode: "inline",
+            variant: 'one-page',
             frameTarget: "checkoutContainer",
             frameInitialHeight: "450",
             frameStyle: "width: 100%; min-width: 410px; background-color: transparent; border: none;",
+            successUrl: 'https://inline-checkout-showcase-app.vercel.app/success'
         },
-        items: items
+        items: items,
     });
 }
 

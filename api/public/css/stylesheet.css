@@ -180,10 +180,20 @@ a {
     z-index: 1;
 }
 
+#successContainer {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    flex: 2;
+    padding: 0px 64px;
+    z-index: 1;
+}
+
 #rightAligningContainer {
-    padding: 96px 0px 40px 0px;
+    padding: 180px 0px 40px 0px;
     max-width: 512px;
     z-index: 2;
+    transition: opacity 1.2s ease, top 1.2s ease; /* Add transition for smooth movement */
 }
 
 #productLabels {
@@ -340,4 +350,10 @@ tr {
 
 .increaseQuantityAdjuster {
     border-left: 0.5px solid #dbdbdb;
+}
+
+#successTopRightProductInfo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }

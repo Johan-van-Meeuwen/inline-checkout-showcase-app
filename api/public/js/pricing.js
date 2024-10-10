@@ -79,12 +79,9 @@ toggleSwitch.addEventListener('change', function () {
 const openOverlayCheckout = (items) => {
     Paddle.Checkout.open({
         items: items,
-        // customer: {
-            // email: "johan+windy-pre-fill@paddle.com",
-            // address: {
-            //     countryCode: "US",
-            //     postalCode: "10001"
-            // }
-        // }
+        settings: {
+            theme: "dark",
+            successUrl: 'https://inline-checkout-showcase-app.vercel.app/success'
+        }
     })
 }

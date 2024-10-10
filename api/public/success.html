@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout</title>
+    <link rel="icon"
+        href="https://gdm-catalog-fmapi-prod.imgix.net/ProductLogo/af64f259-14e8-4c9a-a327-51c2d99cb487.png"
+        type="image/png">
+    <link rel="stylesheet" href="/css/stylesheet.css">
+    <script src="https://kit.fontawesome.com/6e759bf7c0.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
+    <script type="text/javascript">
+        function initializePaddle() {
+            return fetch('/env', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id: sessionStorage.getItem('mySettingsId') })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Got token...');
+                    let clientSideToken = data.clientSideToken;
+
+                    Paddle.Environment.set("sandbox");
+                    Paddle.Initialize({
+                        token: clientSideToken,
+                        eventCallback: function (data) {
+                            if (data.type !== "checkout.ping.size") {
+                                console.log(data);
+                                let currencySymbols = document.getElementsByClassName('currencySymbol');
+                                for (const key in currencySymbols) {
+                                    if (currencySymbols.hasOwnProperty(key)) {
+                                        const element = currencySymbols[key];
+                                        if (element) {
+                                            if (data.data.currency_code === 'GBP') {
+                                                element.innerText = '£';
+                                            } else if (data.data.currency_code === 'USD') {
+                                                element.innerText = '$';
+                                            } else if (data.data.currency_code === 'EUR') {
+                                                element.innerText = '€';
+                                            } else {
+                                                element.innerText = `${data.data.currency_code} `;
+                                            }
+                                        }
+                                    }
+                                }
+                                document.getElementById('grandTotalAmount').innerText = data.data.totals.total.toFixed(2);
+                                document.getElementById('priceQuantity').innerText = data.data.items[0].quantity;
+                                document.getElementById('priceName').innerText = data.data.items[0].price_name;
+                                document.getElementById('productSubtotal').innerText = data.data.items[0].totals.subtotal.toFixed(2);
+
+                                if (data.data.items.length === 2 && data.name === 'checkout.loaded') {
+                                    const pricingTable = document.getElementById('pricingTable');
+                                    const secondProductLineRow = document.createElement('tr');
+                                    secondProductLineRow.id = 'secondProductLine';
+                                    secondProductLineRow.innerHTML = `
+                                    <td class="greyText">
+                                        <div class="quantityAndPrice">
+                                            <div class="quantityAdjuster">
+                                                <a class="decreaseQuantityAdjuster" href="#" onclick="decreaseCheckoutQuantityTwo()">-</a>
+                                                <span id="priceQuantityTwo">${data.data.items[1].quantity}</span>
+                                                <a class="increaseQuantityAdjuster" href="#" onclick="increaseCheckoutQuantityTwo()">+</a>
+                                            </div>
+                                            <span id="priceName">${data.data.items[1].price_name}</span>
+                                        </div>
+                                    </td>
+                                    <td class="greyText"><span class="currencySymbol">£</span><span id="productSubtotalTwo">${data.data.items[1].totals.subtotal.toFixed(2)}</span></td>
+                                `;
+                                    const productLineRow = document.getElementById('productLine');
+                                    if (productLineRow) {
+                                        productLineRow.insertAdjacentElement('afterend', secondProductLineRow);
+                                    } else {
+                                        console.error('Product line element not found.');
+                                    }
+                                } else if (data.data.items.length === 2 && (data.name === 'checkout.items.updated' || data.name === 'checkout.customer.updated')) {
+                                    document.getElementById('productSubtotalTwo').innerText = data.data.items[1].totals.subtotal.toFixed(2);
+                                }
+
+                                document.getElementById('totalSubtotal').innerText = data.data.totals.subtotal.toFixed(2);
+                                document.getElementById('taxTotal').innerText = data.data.totals.tax.toFixed(2);
+                                document.getElementById('totalToday').innerText = data.data.totals.total.toFixed(2);
+
+                                if (data.data.recurring_totals) {
+                                    document.getElementById('recurringTotal').innerText = data.data.recurring_totals.total.toFixed(2);
+                                    document.getElementById('purchaseType').innerText = "Subscription";
+                                    if (data.data.items[0].billing_cycle === null) {
+                                        if (data.data.items[1].billing_cycle.frequency === 1) {
+                                            document.getElementById('recurringInterval').innerText = data.data.items[1].billing_cycle.interval;
+                                        } else {
+                                            document.getElementById('recurringInterval').innerText = `${data.data.items[1].billing_cycle.frequency} ${data.data.items[1].billing_cycle.interval}s`;
+                                        }
+                                    } else {
+                                        if (data.data.items[0].billing_cycle.frequency === 1) {
+                                            document.getElementById('recurringInterval').innerText = data.data.items[0].billing_cycle.interval;
+                                        } else {
+                                            document.getElementById('recurringInterval').innerText = `${data.data.items[0].billing_cycle.frequency} ${data.data.items[0].billing_cycle.interval}s`;
+                                        }
+                                    }
+                                } else {
+                                    document.getElementById('recurringPrice').classList.add('hidden');
+                                    document.getElementById('purchaseType').innerText = "One-time purchase";
+                                }
+
+                                document.getElementById('currencyLabel').innerText = data.data.currency_code;
+                            }
+
+                            if (data.name === 'checkout.customer.created') {
+                                document.getElementById('yourDetails').classList.remove('brandedText');
+                                document.getElementById('payment').classList.add('brandedText');
+                            }
+                        }
+                    });
+
+                    return clientSideToken;
+                })
+                .catch(error => {
+                    console.error('Error fetching environment variables:', error);
+                    return Promise.reject(error);
+                });
+        }
+        let paddleInitialization = initializePaddle();
+    </script>
+</head>
+
+<body>
+    <div id="pageContainer">
+        <div id="successContainer" class="backgroundBeams">
+            <div class="gridBackground"></div>
+            <div id="rightAligningContainer" style="opacity: 0; position: absolute; top: 0;">
+                <div id="successTopRightProductInfo">
+                    <div id="productLabels">
+                        <h5 class="brandedText">All-access</h5>
+                        <h6 id="purchaseType">Subscription</h6>
+                    </div>
+                    <div id="grandTotal">
+                        <i class="fa-regular fa-circle-check" style="font-size: 32px; margin-right: 8px;"></i>
+                        <h3 id="grandTotalPrice"><span id="grandTotalCurrency" class="currencySymbol"></span><span
+                                id="grandTotalAmount">Success</span></h3>
+                    </div>
+                    <p class="greyText greyTextMargin" style="max-width: 350px; text-align: center;">Welcome! Manage
+                        your subscription, billing information, and payment below</p>
+                    <a class='quantityAdjuster' href="#" style="text-decoration: none;
+                    padding: 8px 24px;
+                    color: rgb(42, 56, 90, 0.9);
+                    font-weight: 600;
+                    margin-top: 24px;">Go to account</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/js/checkout.js"></script>
+    <script>
+        window.onload = function () {
+            const container = document.getElementById('rightAligningContainer');
+            container.style.top = '80px'; // Change to desired position
+            container.style.opacity = '1'; // Fade in effect
+        };
+
+    </script>
+</body>
+
+</html>

@@ -51,6 +51,10 @@ app.get('/checkout', (req, res) => {
     res.sendFile(path.join(__dirname, '/public/checkout.html'))
 })
 
+app.get('/success', (req, res) => {
+    res.sendFile(path.join(__dirname, '/public/success.html'))
+})
+
 app.use(express.urlencoded({ extended: true }))
 
 function getApiFlashUrl(preCheckoutUrl) {
