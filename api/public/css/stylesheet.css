@@ -190,6 +190,12 @@ a {
 }
 
 #rightAligningContainer {
+    padding: 112px 0px 40px 0px;
+    max-width: 512px;
+    z-index: 2;
+}
+
+#successRightAligningContainer {
     padding: 180px 0px 40px 0px;
     max-width: 512px;
     z-index: 2;
