@@ -80,7 +80,6 @@ const openOverlayCheckout = (items) => {
     Paddle.Checkout.open({
         items: items,
         settings: {
-            theme: "dark",
             successUrl: 'https://inline-checkout-showcase-app.vercel.app/success'
         }
     })
