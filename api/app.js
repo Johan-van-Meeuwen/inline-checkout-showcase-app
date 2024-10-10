@@ -36,7 +36,7 @@ app.post('/env', async (req, res) => {
             clientSideToken: opcClientSideToken
         });
     }
-    
+
 });
 
 app.get('/', (req, res) => {
@@ -288,7 +288,7 @@ app.post('/settings', async (req, res) => {
             spmProductId: spmProductId,
             spmPriceId: spmPriceId,
             spmProductName: spmProductName,
-            spmProductImage: spmProductImage, 
+            spmProductImage: spmProductImage,
             spmBasePriceName: spmBasePriceName,
             spmBasePrice: spmBasePrice,
             spmQuantitySelect: spmQuantitySelect
@@ -341,24 +341,22 @@ app.post('/get-prices', async (req, res) => {
 })
 
 app.post('/get-customer-auth-token', async (req, res) => {
-    await connectToDatabase()
-    const mySettingsId = req.body.mySettingsId
-    const returnedResult = await Settings.findById(mySettingsId).exec()
-    const inlineVariant = returnedResult.inlineVariant
-    console.log(inlineVariant)
+    console.log(req.body)
+    // await connectToDatabase()
+    // const mySettingsId = req.body.mySettingsId
+    // const returnedResult = await Settings.findById(mySettingsId).exec()
+    // const inlineVariant = returnedResult.inlineVariant
+    // console.log(inlineVariant)
 
     const customerId = req.body.customerId
-    console.log(apiToken)
     console.log(opcApiToken)
 
-    // FIX THIS:
     // const customerAuthTokenResponse = await axios.post(
-    //     `https://sandbox-api.paddle.com/customers/${customerId}/auth-token`,
+    //     `https://sandbox-api.paddle.com/customers/${customerId}/auth-token`, null,
     //     {
     //         headers: {
-    //             'Authorization': `Bearer ${returnedResult.inlineVariant === 'standard' ? apiToken : opcApiToken}`,
+    //             'Authorization': `Bearer ${opcApiToken}`,
     //             // 'Authorization': `Bearer 41f3631dbfbb138228a79eb3f57179604339b5f459ed0f5845`,
-                
     //             'Content-Type': 'application/json'
     //         }
     //     }
@@ -366,6 +364,26 @@ app.post('/get-customer-auth-token', async (req, res) => {
     // console.log(customerAuthTokenResponse)
     // const customerAuthToken = customerAuthTokenResponse.data.data.customer_auth_token
     // res.json(customerAuthToken)
+
+    let config = {
+        method: 'post',
+        maxBodyLength: Infinity,
+        url: 'https://sandbox-api.paddle.com/customers/ctm_01j9vz3hv71g7cza67abmhy0h0/auth-token',
+        headers: {
+            'Authorization': `Bearer ${opcApiToken}`,
+            'Content-Type': 'application/json'
+        }
+        // data: {}
+    };
+
+    axios.request(config)
+        .then((response) => {
+            const authToken = JSON.stringify(response.data.data.customer_auth_token);
+            res.json(authToken)
+        })
+        .catch((error) => {
+            console.log(error);
+        });
 })
 
 app.listen('8000', (req, res) => {

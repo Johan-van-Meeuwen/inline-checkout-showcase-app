@@ -36,18 +36,6 @@ function fetchCheckoutSettings() {
                 }
             ]
 
-            fetch('/get-customer-auth-token', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ customerId: sessionStorage.getItem('customerId'), mySettingsId: sessionStorage.getItem('mySettingsId') })
-            })
-                .then(response => response.json())
-                .then(response => {
-                    console.log(response)
-                })
-
             console.log('Fetched checkout settings');
         })
         .catch(error => {
@@ -55,8 +43,10 @@ function fetchCheckoutSettings() {
         });
 }
 
-const openCheckout = (items) => {
-    Paddle.Checkout.open({
+const openCheckout = (items, token) => {
+    console.log(`Before call: ${token}`);  // Check if the token exists here
+
+    const checkoutOptions = {
         settings: {
             displayMode: "inline",
             variant: 'one-page',
@@ -65,15 +55,41 @@ const openCheckout = (items) => {
             frameStyle: "width: 100%; min-width: 390px; background-color: transparent; border: none;",
             successUrl: 'https://inline-checkout-showcase-app.vercel.app/success'
         },
-        items: items,
-    });
+        customerAuthToken: token,  // Ensure token is passed here
+        items: items
+    };
+
+    console.log('Checkout options:', checkoutOptions);  // Log the full object being passed to Paddle.Checkout.open
+
+    Paddle.Checkout.open(checkoutOptions);  // Confirm it's receiving the correct parameters
+
+    console.log(`After call: ${token}`);  // Check if token remains unchanged
 }
 
 if (typeof paddleInitialization !== 'undefined') {
     paddleInitialization.then(() => {
         fetchCheckoutSettings().then(() => {
-            console.log('Opening checkout...');
-            openCheckout(itemList);
+            console.log('Opening checkout...')
+
+            fetch('/get-customer-auth-token', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ customerId: sessionStorage.getItem('customerId'), mySettingsId: sessionStorage.getItem('mySettingsId') })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    customerAuthToken = data
+                    console.log(`Received auth token: ${customerAuthToken}`);
+                    customerAuthToken = customerAuthToken.replace(/^"+|"+$/g, '');
+            
+                    if (customerAuthToken) {
+                        openCheckout(itemList, customerAuthToken);
+                    } else {
+                        console.error('Failed to retrieve customerAuthToken');
+                    }
+                })
         });
     }).catch(error => {
         console.error('Paddle initialization failed:', error);
