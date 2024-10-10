@@ -333,7 +333,9 @@ app.post('/get-prices', async (req, res) => {
         priceOneId: returnedResult.priceId,
         priceOneQuantity: returnedResult.priceQuantity,
         priceTwoId: returnedResult.priceIdTwo,
-        priceTwoQuantity: returnedResult.priceQuantityTwo
+        priceTwoQuantity: returnedResult.priceQuantityTwo,
+        spmPriceId: returnedResult.spmPriceId,
+        spmQuantitySelect: returnedResult.spmQuantitySelect
     }
     res.json(items)
 })
@@ -349,23 +351,21 @@ app.post('/get-customer-auth-token', async (req, res) => {
     console.log(apiToken)
     console.log(opcApiToken)
 
-    const createSpmApiRequest = {
-        customer_id: customerId
-    };
-
-    const customerAuthTokenResponse = await axios.post(
-        `https://sandbox-api.paddle.com/customers/${customerId}/auth-token`,
-        createSpmApiRequest, // Use null for no body
-        {
-            headers: {
-                'Authorization': `Bearer ${returnedResult.inlineVariant === 'standard' ? apiToken : opcApiToken}`,
-                'Content-Type': 'application/json'
-            }
-        }
-    );
-    console.log(customerAuthTokenResponse)
-    const customerAuthToken = customerAuthTokenResponse.data.data.customer_auth_token
-    res.json('hi')
+    // FIX THIS:
+    // const customerAuthTokenResponse = await axios.post(
+    //     `https://sandbox-api.paddle.com/customers/${customerId}/auth-token`,
+    //     {
+    //         headers: {
+    //             'Authorization': `Bearer ${returnedResult.inlineVariant === 'standard' ? apiToken : opcApiToken}`,
+    //             // 'Authorization': `Bearer 41f3631dbfbb138228a79eb3f57179604339b5f459ed0f5845`,
+                
+    //             'Content-Type': 'application/json'
+    //         }
+    //     }
+    // );
+    // console.log(customerAuthTokenResponse)
+    // const customerAuthToken = customerAuthTokenResponse.data.data.customer_auth_token
+    // res.json(customerAuthToken)
 })
 
 app.listen('8000', (req, res) => {
