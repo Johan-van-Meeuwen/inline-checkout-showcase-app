@@ -86,6 +86,22 @@
             width: 50%;
         }
 
+        #spmPriceButton {
+            display: block;
+            width: 50%;
+            padding: 10px;
+            background-color: #fddd35;
+            color: #555;
+            font-weight: 700;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+            text-decoration: none;
+            text-align: center;
+        }
+
         .hidden {
             display: none !important;
         }
@@ -240,6 +256,39 @@
             <option value="standard">Standard Inline</option>
         </select>
 
+        <!-- SPM Product -->
+        <a id="spmPriceButton" href="#" onclick="provideSpmProductAndPriceInputs()">Add Saved Payment Method Product</a>
+
+        <div id="spmProductAndPriceDiv" class="hidden">
+            <!-- SPM Name -->
+            <label for="spmProductName">SPM Product Name</label>
+            <input type="text" name="spmProductName" id="spmProductName" disabled
+                class="textLengthValidationValidatees">
+            <!-- <span class="textLengthValidationError">Must be between 2-100 characters</span> -->
+
+            <!-- SPM Image -->
+            <label for="spmProductImage">SPM Product Logo</label>
+            <input type="text" name="spmProductImage" id="spmProductImage" disabled>
+
+            <!-- SPM Name -->
+            <label for="spmBasePriceName">SPM Price Name</label>
+            <input type="text" name="spmBasePriceName" id="spmBasePriceName" disabled
+                class="textLengthValidationValidatees">
+            <!-- <span class="textLengthValidationError">Must be between 2-100 characters</span> -->
+
+            <!-- SPM Base Price -->
+            <label for="spmBasePrice">SPM USD Price</label>
+            <input type="text" name="spmBasePrice" id="spmBasePrice" placeholder="No decimals. 50000 = $500.00"
+                disabled>
+            <span id="spmBasePriceError" class="error-message">Please enter a number greater or equal to 100 without a
+                decimal point</span>
+
+            <!-- SPM Price Quantity -->
+            <label for="spmQuantitySelect">SPM Price Quantity</label>
+            <input type="text" name="spmQuantitySelect" id="spmQuantitySelect" disabled>
+        </div>
+
+
         <input id="submit" type="submit" value="Submit">
         <p class="formText">Wait 60 seconds. If countdown hits 0, message Johan.</p>
     </form>
@@ -270,7 +319,12 @@
                 logo: document.getElementById('logoInput').value,
                 primaryColour: document.getElementById('primaryColour').value,
                 preCheckoutUrl: document.getElementById('preCheckoutUrl').value,
-                inlineVariant: document.getElementById('inlineVariant').value
+                inlineVariant: document.getElementById('inlineVariant').value,
+                spmProductName: document.getElementById('spmProductName').value,
+                spmProductImage: document.getElementById('spmProductImage').value,
+                spmBasePriceName: document.getElementById('spmBasePriceName').value,
+                spmBasePrice: document.getElementById('spmBasePrice').value,
+                spmQuantitySelect: document.getElementById('spmQuantitySelect').value
             };
 
             const submitButton = document.getElementById('submit');
@@ -387,6 +441,52 @@
             }
         }
 
+        const provideSpmProductAndPriceInputs = (event) => {
+            const divElement = document.getElementById('spmProductAndPriceDiv');
+            const buttonElement = document.getElementById('spmPriceButton');
+
+            if (divElement.classList.contains('hidden')) {
+                // Show the div and enable inputs
+                divElement.classList.remove('hidden');
+
+                var inputs = divElement.querySelectorAll('input, select');
+                inputs.forEach(function (input) {
+                    input.disabled = false; // Enable the input/select
+                    input.setAttribute('required', 'required'); // Set the required attribute
+
+                    // Find the corresponding label
+                    var label = document.querySelector('label[for="' + input.id + '"]');
+                    if (label) {
+                        label.classList.add('required'); // Add the 'required' class to the label
+                    }
+                });
+
+                const spmProductImageInput = document.getElementById('spmProductImage');
+                spmProductImageInput.removeAttribute('required');
+                const spmProductImageLabel = document.querySelector('label[for="spmProductImage"]');
+                spmProductImageLabel.classList.remove('required');
+
+                buttonElement.textContent = 'Remove'; // Change button text to 'Remove'
+            } else {
+                // Hide the div and disable inputs
+                divElement.classList.add('hidden');
+
+                var inputs = divElement.querySelectorAll('input, select');
+                inputs.forEach(function (input) {
+                    input.disabled = true; // Disable the input/select
+                    input.removeAttribute('required'); // Remove the required attribute
+
+                    // Find the corresponding label
+                    var label = document.querySelector('label[for="' + input.id + '"]');
+                    if (label) {
+                        label.classList.remove('required'); // Remove the 'required' class from the label
+                    }
+                });
+
+                buttonElement.textContent = 'Add saved payment method product'; // Change button text back to original
+            }
+        }
+
         function updateFrequencyVisibilityTwo() {
             var intervalTwo = document.getElementById('intervalTwo');
             var frequencyLabelTwo = document.getElementById('frequencyLabelTwo');
@@ -490,6 +590,14 @@
         secondPriceButton.addEventListener('click', function (event) {
             event.preventDefault();
             productNameTwoInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+
+        const spmPriceButton = document.getElementById('spmPriceButton');
+        const spmNameInput = document.getElementById('spmProductName');
+
+        spmPriceButton.addEventListener('click', function (event) {
+            event.preventDefault();
+            spmProductName.scrollIntoView({ behavior: 'smooth', block: 'center' });
         });
 
         // Final validation before form submission

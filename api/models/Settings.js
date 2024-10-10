@@ -21,7 +21,14 @@ const settingsSchema = new mongoose.Schema({
     primaryColour: { type: String },
     preCheckoutUrl: { type: String },
     preCheckoutUrlApiFlashUrl: { type: String },
-    inlineVariant: { type: String }
+    inlineVariant: { type: String },
+    spmProductId: { type: String },
+    spmPriceId: { type: String },
+    spmProductName: { type: String },
+    spmProductImage: { type: String },
+    spmBasePriceName: { type: String },
+    spmBasePrice: { type: String },
+    spmQuantitySelect: { type: String }
 })
 
 const Settings = new mongoose.model('Settings', settingsSchema)

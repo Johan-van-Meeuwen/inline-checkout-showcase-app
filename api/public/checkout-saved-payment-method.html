@@ -128,44 +128,84 @@
 
 <body>
     <div id="pageContainer">
-        <div id="successContainer" class="backgroundBeams">
+
+        <div id="leftContainer">
+            <img src="https://miro.medium.com/v2/resize:fit:1260/1*ngNzwrRBDElDnf2CLF_Rbg.gif" alt="" id="logo">
+            <div id="breadcrumbs">
+                <a class="breadcrumbLabel" href="/pricing">Packages</a>
+                <i class="fa-solid fa-chevron-right"></i>
+                <p id="yourDetails" class="breadcrumbLabel brandedText">Your details</p>
+                <i class="fa-solid fa-chevron-right"></i>
+                <p id="payment" class="breadcrumbLabel">Payment</p>
+            </div>
+            <div class="checkoutContainer"></div>
+        </div>
+
+        <div id="rightContainer" class="backgroundBeams">
             <div class="gridBackground"></div>
-            <div id="successRightAligningContainer" style="opacity: 0; position: absolute; top: 0;">
-                <div id="successTopRightProductInfo">
+            <div id="rightAligningContainer">
+                <div id="topRightProductInfo">
                     <div id="productLabels">
                         <h5 class="brandedText">All-access</h5>
                         <h6 id="purchaseType">Subscription</h6>
                     </div>
                     <div id="grandTotal">
-                        <i class="fa-regular fa-circle-check" style="font-size: 32px; margin-right: 8px;"></i>
-                        <h3 id="grandTotalPrice"><span id="grandTotalCurrency" class="currencySymbol"></span><span
-                                id="grandTotalAmount">Success</span></h3>
+                        <h3 id="grandTotalPrice"><span id="grandTotalCurrency" class="currencySymbol">£</span><span
+                                id="grandTotalAmount">10.00</span></h3>
+                        <h4 id="dueTodayLabel">due today</h4>
                     </div>
-                    <p class="greyText greyTextMargin" style="max-width: 350px; text-align: center;">Welcome! Manage
-                        your subscription, billing information, and payment below</p>
-                    <a class='quantityAdjuster' href="https://sandbox-customer-portal.paddle.com/cpl_01j21vgaa3pgqp8xfjs2veqwh6" style="text-decoration: none;
-                    padding: 8px 24px;
-                    color: rgb(42, 56, 90, 0.9);
-                    font-weight: 600;
-                    margin-top: 24px;">Go to account</a>
+                    <p class="greyText greyTextMargin">Includes full access to the product, plus all future updates.
+                        Add more seats, upgrade, pause or cancel your subscription at any time.</p>
+                    <p id="currencyGreyText">All prices in <span id="currencyLabel">GBP</span></p>
+                </div>
 
-                    <a id="spmPurchaseButton" href="/checkout-saved-payment-method" style="margin-top: 24px;
-                    font-size: 12px;
-                    color: rgb(42, 56, 90, 0.7);
-                    text-decoration: underline;">Buy one-off product</a>
+                <div id="pricingTableSection">
+                    <table id="pricingTable">
+                        <tr id="productLine">
+                            <td class="greyText">
+                                <div class="quantityAndPrice">
+                                    <div class="quantityAdjuster">
+                                        <a class="decreaseQuantityAdjuster" href="#"
+                                            onclick="decreaseCheckoutQuantity()">-</a>
+                                        <span id="priceQuantity">1</span>
+                                        <a class="increaseQuantityAdjuster" href="#"
+                                            onclick="increaseCheckoutQuantity()">+</a>
+
+                                    </div>
+                                    <span id="priceName">Unit</span>
+                                </div>
+                            </td>
+                            <td class="greyText"><span class="currencySymbol">£</span><span
+                                    id="productSubtotal">8.00</span></td>
+                        </tr>
+                        <tr id="subtotalLine">
+                            <td class="greyText">Subtotal</td>
+                            <td class="boldText"><span class="currencySymbol">£</span><span
+                                    id="totalSubtotal">8.00</span></td>
+                        </tr>
+                        <tr id="taxesLine">
+                            <td class="greyText">Taxes</td>
+                            <td class="greyText"><span class="currencySymbol">£</span><span id="taxTotal">2.00</span>
+                            </td>
+                        </tr>
+                        <tr id="totalPrice">
+                            <td class="greyText boldText">Total price (due today)</td>
+                            <td class="boldText"><span class="currencySymbol">£</span><span id="totalToday">10.00</span>
+                            </td>
+                        </tr>
+                        <tr id="recurringPrice">
+                            <td class="greyText">then</td>
+                            <td class="greyText"><span class="currencySymbol">£</span><span
+                                    id="recurringTotal">10.00</span> every <span id="recurringInterval">month</span>
+                            </td>
+                        </tr>
+                    </table>
                 </div>
             </div>
+
         </div>
     </div>
-    <script src="/js/checkout.js"></script>
-    <script>
-        window.onload = function () {
-            const container = document.getElementById('successRightAligningContainer');
-            container.style.top = '80px'; // Change to desired position
-            container.style.opacity = '1'; // Fade in effect
-        };
-
-    </script>
+    <script src="/js/checkout-saved-payment-method.js"></script>
 </body>
 
 </html>

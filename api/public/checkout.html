@@ -112,6 +112,10 @@
                                 document.getElementById('yourDetails').classList.remove('brandedText');
                                 document.getElementById('payment').classList.add('brandedText');
                             }
+
+                            if (data.name === 'checkout.completed') {
+                                sessionStorage.setItem('customerId', data.data.customer.id)
+                            }
                         }
                     });
 
