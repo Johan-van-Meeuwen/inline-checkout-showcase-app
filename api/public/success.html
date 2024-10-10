@@ -162,8 +162,24 @@
         window.onload = function () {
             const container = document.getElementById('successRightAligningContainer');
             container.style.top = '80px'; // Change to desired position
-            container.style.opacity = '1'; // Fade in effect
+            container.style.opacity = '1';
         };
+
+        fetch('/get-prices', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ id: sessionStorage.getItem('mySettingsId') })
+            
+        }).then(response => response.json())
+        .then(response => {
+            console.log(response)
+            if (!response.spmPriceId) {
+                const spmPurchaseButton = document.getElementById('spmPurchaseButton')
+                spmPurchaseButton.style = 'display: none;'
+            }
+        })
 
     </script>
 </body>
